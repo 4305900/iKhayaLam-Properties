@@ -91,7 +91,7 @@ The core helper. It takes a list of label names to try, in priority order, and r
 - **Add a new field:** call `getValue` with its labels and add the result to the returned object.
 - **Change the reference format:** update the `\bIK-MS[\w-]*` pattern.
 
-- # Request Key Generator
+# Request Key Generator
 
 A JavaScript snippet for a **Code by Zapier** step. It validates the details of a property viewing request and produces a stable, unique **request key** (an idempotency key). Later steps can use that key to detect and skip duplicate requests, for example when a form is submitted twice or a Zap retries.
 
