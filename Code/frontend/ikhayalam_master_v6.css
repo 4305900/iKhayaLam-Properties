@@ -1,0 +1,2137 @@
+/* ===========================================================================
+   iKhayaLam Properties — MASTER V6
+   Oracle APEX Application 103 | 06 November 2026
+   COMPLETE STANDALONE CSS FILE: replaces V2, V3, V4, V5 and final refinements.
+   Includes public pages, property cards, galleries, welcome page, FAQ,
+   staff dashboard, client leads, Manage Viewing, login, admin and mobile.
+   CSS only: no changes to HTML data bindings, SQL, page security, APIs,
+   Oracle booking actions, Infobip chatbot or Zapier automation.
+   =========================================================================== */
+
+/* ===========================================================================
+   iKhayaLam Properties | Application 103 | MASTER STYLESHEET v6.0
+   Intent: Complete standalone application stylesheet; replaces all older versions.
+   Built from Page Designer and live-site screenshots, 06 Nov 2026. Consolidated visual system.
+   Theme: Universal Theme. All changes are visual only.
+
+   REQUIRED REGION CLASSES (Page Designer > select region > Appearance > CSS Classes)
+   P1  Find Your Next Home -> ik-search; Available Properties -> ik-listings
+   P2  Property Details -> ik-details; Property Images -> ik-gallery
+   P3  Bulk Property Image Uploader -> ik-upload
+   P4  Buying Property -> ik-upload
+   P5  Welcome to iKhayaLam Properties -> ik-welcome
+   P6  Find Your Home to Buy -> ik-search; Available Properties for Sale -> ik-listings
+   P7  Buying Property Details -> ik-details; Property_photo -> ik-gallery
+   P8  Dashboard -> ik-dashboard; Scheduled Property Viewings -> ik-viewings
+   P9  Manage Viewing -> ik-manage
+   P10 Client Leads -> ik-leads
+   P11 Frequently Asked Questions -> ik-faq
+   P9999 iKhayaLam Estate Agent Portal -> ik-login
+   P10000 / P10010-P10014 main regions -> ik-admin (optional)
+
+   BUTTON CLASSES (append existing; do NOT alter actions or Static IDs)
+   P5 Buy_Property -> ik-action-buy; RENT_PROPERTY -> ik-action-rent
+   P2 interested_viewing -> ik-book-button
+   P7 ENQUIRE_BUYING -> ik-book-button
+   P8 VIEW_CLIENT_LEADS -> ik-secondary-button
+   P9 SAVE / Apply Changes -> ik-save-button; CANCEL -> ik-secondary-button
+   P9 DELETE -> ik-danger-button; P10 BACK_TO_DASHBOARD -> ik-secondary-button
+
+   Do not paste into JavaScript, HTML or SQL. Do not style/hide the Infobip
+   authentication messages: those represent a separate integration issue.
+   =========================================================================== */
+
+/* 01  Brand palette: dark translucent teal + linen + clay */
+:root {
+  --ik-deep:#173a40;
+  --ik-deep-2:#28545a;
+  --ik-teal:#397a79;
+  --ik-clay:#b96853;
+  --ik-clay-hover:#9b513e;
+  --ik-sand:#ecd9bf;
+  --ik-bg:#f0ebe4;
+  --ik-paper:#faf7f2;
+  --ik-surface:#fffdf9;
+  --ik-ink:#26393c;
+  --ik-muted:#667373;
+  --ik-border:#e0d9cf;
+  --ik-radius:16px;
+  --ik-shadow:0 8px 30px rgba(27,51,52,.08);
+  --ik-lift:0 18px 40px rgba(27,51,52,.16);
+}
+
+html {scroll-behavior:smooth;}
+body.t-PageBody {
+  background: radial-gradient(ellipse at 90% 5%,rgba(133,183,169,.16),transparent 36%),
+              radial-gradient(ellipse at 5% 90%,rgba(194,132,107,.10),transparent 40%),
+              var(--ik-bg);
+  color:var(--ik-ink);
+  font-family:Inter,"Segoe UI",system-ui,Arial,sans-serif;
+}
+.t-Body-content {background:transparent;color:var(--ik-ink);}
+.t-Body-contentInner {max-width:1640px;margin-inline:auto;}
+.t-Body-title {background:transparent;}
+.t-Body-title .t-Body-titleText,.t-Body-title h1 {
+  font-weight:790;font-size:clamp(1.55rem,2.2vw,2.25rem);
+  letter-spacing:-.035em;color:var(--ik-deep);
+}
+.t-BreadcrumbRegion {background:transparent;}
+.t-BreadcrumbRegion .t-Breadcrumb-label {color:var(--ik-muted);}
+::selection {background:#b1d3cc;color:#16383e;}
+
+/* 02  Translucent dark-TEAL header and navigation (NOT solid black) */
+.t-Header, .t-Header-branding, .t-Header-navBar {
+  background:linear-gradient(110deg,rgba(19,58,65,.97),rgba(39,79,79,.90))!important;
+  -webkit-backdrop-filter:blur(16px) saturate(125%);
+  backdrop-filter:blur(16px) saturate(125%);
+  border-bottom:1px solid rgba(244,227,208,.19);
+}
+.t-Header :is(.t-Header-logo-link,.t-Header-userName,a,button) {color:#fff7ed;}
+.t-Header :is(a,button):hover {color:#ffe2bb;}
+.t-Header :is(a,button):focus-visible {outline:2px solid #efd0a7;outline-offset:2px;}
+.t-Body-nav {
+  background:linear-gradient(162deg,rgba(22,60,65,.96),rgba(45,76,76,.91))!important;
+  -webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);
+  border-right:1px solid rgba(245,231,212,.16);
+  box-shadow:5px 0 26px rgba(22,52,55,.08);
+}
+.t-Body-nav .t-TreeNav,
+.t-Body-nav .t-TreeNav .a-TreeView,
+.t-Body-nav .t-TreeNav .a-TreeView-row {background:transparent;}
+.t-Body-nav .t-TreeNav .a-TreeView-content {
+  color:#e9f2ee!important;
+  border-radius:12px;
+  margin:3px 9px;
+  padding:11px 10px;
+  transition:background-color .2s,color .2s,transform .2s;
+}
+.t-Body-nav .t-TreeNav .a-TreeView-content:hover {
+  background:rgba(255,255,255,.13)!important;
+  color:#fff!important;transform:translateX(2px);
+}
+.t-Body-nav .t-TreeNav :is(.is-selected,.is-current) > .a-TreeView-content,
+.t-Body-nav .t-TreeNav .a-TreeView-content.is-current,
+.t-Body-nav .t-TreeNav .a-TreeView-content.is-selected {
+  background:rgba(236,217,191,.20)!important;
+  color:#fff!important;
+  box-shadow:inset 3px 0 0 #e7bc91;
+}
+.t-Body-nav .t-TreeNav :is(.a-TreeView-label,.a-TreeView-node,.fa) {color:inherit;}
+.t-Body-nav .t-TreeNav .a-TreeView-content:focus-visible {
+  outline:2px solid #efd0a7;outline-offset:-1px;
+}
+
+/* 03  Shared surfaces + readable forms */
+.t-Body-content .t-Region:not(.t-Region--noUI) {
+  border-radius:var(--ik-radius);
+  background:var(--ik-surface);
+  border:1px solid var(--ik-border);
+  box-shadow:var(--ik-shadow);
+}
+.t-Region-header {
+  background:linear-gradient(100deg,rgba(248,244,238,.96),rgba(248,245,241,.82));
+  border-bottom:1px solid var(--ik-border);
+}
+.t-Region-title {font-weight:760;letter-spacing:-.015em;color:var(--ik-deep);}
+.t-Form-label {font-weight:650;color:var(--ik-ink);}
+.t-Form-inputContainer :is(input.apex-item-text,select.apex-item-select,
+ textarea.apex-item-textarea,input.apex-item-datepicker,input[type="number"],input[type="search"]) {
+  min-height:44px;background:#fffdf9;color:var(--ik-ink);
+  border:1px solid #cbd8d4;border-radius:11px;
+  transition:box-shadow .2s,border-color .2s;
+}
+.t-Form-inputContainer :is(input,select,textarea):focus {
+  border-color:var(--ik-teal);
+  box-shadow:0 0 0 3px rgba(57,122,121,.16);
+}
+:is(button,a,input,select,textarea,summary):focus-visible {
+  outline:2px solid #c88868;outline-offset:3px;
+}
+.t-Alert {border-radius:12px;}
+
+/* 04  Buttons: consistent shape; existing APEX processes remain unchanged */
+.t-Button {
+  border-radius:11px;font-weight:700;
+  transition:transform .18s,box-shadow .18s,background-color .18s,border-color .18s;
+}
+.t-Button:hover {transform:translateY(-1px);}
+.t-Button--hot,.t-Button--hot:visited,.ik-save-button.t-Button {
+  color:#fff!important;background:var(--ik-clay)!important;
+  border:1px solid var(--ik-clay)!important;
+}
+.t-Button--hot:hover,.ik-save-button.t-Button:hover {
+  background:var(--ik-clay-hover)!important;border-color:var(--ik-clay-hover)!important;
+  box-shadow:0 8px 20px rgba(145,74,54,.24);
+}
+.ik-secondary-button.t-Button {
+  background:#f7f4ed!important;color:var(--ik-deep)!important;
+  border:1px solid #bfd0c9!important;
+}
+.ik-secondary-button.t-Button:hover {background:#e1eeea!important;}
+.ik-danger-button.t-Button {
+  background:#fff2ee!important;color:#953c33!important;border:1px solid #c88679!important;
+}
+.ik-danger-button.t-Button:hover {background:#f9ded7!important;}
+.ik-book-button.t-Button {
+  background:var(--ik-clay)!important;color:#fff!important;
+  border-color:var(--ik-clay)!important;min-height:48px;padding:11px 24px;
+}
+.ik-book-button.t-Button:hover {background:var(--ik-clay-hover)!important;}
+
+/* 05  Page 5 — welcome hero. Text previously inherited DARK colours. Fix it. */
+.t-Body-content .ik-welcome.t-Region {
+  border:1px solid rgba(255,255,255,.18);
+  border-radius:24px;
+  background:linear-gradient(125deg,#14383e 0%,#24545b 57%,#326967 100%)!important;
+  box-shadow:0 25px 55px rgba(22,58,64,.22);
+  overflow:hidden;
+}
+.ik-welcome .t-Region-header {
+  background:rgba(8,34,39,.26)!important;
+  border-bottom:1px solid rgba(255,255,255,.20);
+}
+.ik-welcome .t-Region-header .t-Region-title {color:#fff4e7!important;}
+.ik-welcome .t-Region-body,
+.ik-welcome .t-Region-bodyWrap,
+.ik-welcome .t-Region-content {
+  background:transparent!important;
+  color:#fff!important;
+}
+.ik-welcome .t-Region-body {
+  text-align:center!important;
+  padding:clamp(38px,5vw,70px) clamp(20px,4vw,55px) 14px!important;
+}
+/* Higher-specificity, scoped correction for the custom welcome HTML. */
+.ik-welcome :is(.t-Region-body,.t-Region-content,.t-Region-bodyWrap)
+ :is(h1,h2,h3,h4,p,span,strong,b,small) {color:#fff7ed!important;opacity:1!important;}
+.ik-welcome :is(.t-Region-body,.t-Region-content) :is(h1,h2,h3) {
+  font-weight:820!important;letter-spacing:-.035em;line-height:1.16;
+  text-shadow:0 2px 14px rgba(10,34,38,.19);
+}
+.ik-welcome :is(.t-Region-body,.t-Region-content) :is(h1,h2) {
+  font-size:clamp(2rem,4.7vw,3.6rem)!important;
+}
+.ik-welcome :is(.t-Region-body,.t-Region-content) p {
+  font-size:clamp(1rem,1.45vw,1.15rem)!important;
+  line-height:1.75!important;max-width:740px;margin:14px auto 0;
+}
+/* Existing buttons are in APEX Below Region [Legacy], left + right slots. */
+.ik-welcome .t-Region-buttons--bottom,
+.ik-welcome .t-Region-buttons {
+  background:transparent!important;border:0!important;
+}
+.ik-welcome .t-Region-buttons--bottom {
+  display:flex!important;align-items:center!important;justify-content:center!important;
+  flex-wrap:wrap!important;gap:14px!important;
+  padding:12px 18px 45px!important;
+}
+.ik-welcome .t-Region-buttons--bottom :is(.t-Region-buttons-left,.t-Region-buttons-right,.t-Region-buttons-middle) {
+  flex:0 0 auto!important;width:auto!important;min-width:0!important;
+  max-width:none!important;margin:0!important;padding:0!important;
+  display:flex!important;align-items:center!important;justify-content:center!important;
+}
+.ik-welcome :is(.ik-action-buy,.ik-action-rent).t-Button {
+  display:inline-flex;align-items:center;justify-content:center;
+  min-height:51px;min-width:195px;padding:12px 23px;
+  border-radius:12px;font-size:1rem;font-weight:760;
+}
+.ik-welcome .ik-action-buy.t-Button {
+  background:#c7785f!important;color:#fff!important;border:1px solid #c7785f!important;
+}
+.ik-welcome .ik-action-buy.t-Button:hover {background:#aa604c!important;}
+.ik-welcome .ik-action-rent.t-Button {
+  background:#fffaf0!important;color:#173a40!important;border:1px solid #fffaf0!important;
+}
+.ik-welcome .ik-action-rent.t-Button:hover {background:#f4dcc2!important;}
+
+/* 06  Pages 1 / 6 — property search panels */
+.ik-search.t-Region {margin-bottom:20px;}
+.ik-search .t-Region-body {padding:22px 20px;background:rgba(237,247,242,.20);}
+.ik-search .t-Region-title {font-size:1.11rem;}
+.ik-search .t-Form-fieldContainer {margin-bottom:10px;}
+.ik-search :is(.apex-item-select,.apex-item-text) {font-weight:550;}
+.ik-search .t-Button {min-height:43px;padding-inline:20px;}
+.ik-search .t-Button--hot {background:var(--ik-deep-2)!important;border-color:var(--ik-deep-2)!important;}
+.ik-search .t-Button--hot:hover {background:var(--ik-deep)!important;}
+
+/* 07  Pages 1 / 6 — property cards / photographic hover */
+.ik-listings :is(.a-CardView-item,.t-Cards-item) {
+  background:var(--ik-surface);border:1px solid #e0d7cc;
+  border-radius:17px;overflow:hidden;
+  box-shadow:0 6px 22px rgba(31,58,55,.085);
+  transition:transform .25s ease,box-shadow .25s ease,border-color .25s ease;
+}
+.ik-listings :is(.a-CardView-item,.t-Cards-item):hover {
+  transform:translateY(-6px);
+  border-color:#b9cec6;
+  box-shadow:0 24px 40px rgba(23,58,64,.16);
+}
+.ik-listings .a-CardView-media {overflow:hidden;aspect-ratio:16/10;background:#e1e5df;}
+.ik-listings .a-CardView-media :is(img,.a-CardView-mediaImg) {
+  display:block;width:100%;height:100%;object-fit:cover;object-position:center;
+  background-position:center;background-size:cover;
+  transition:transform .45s ease;
+}
+.ik-listings :is(.a-CardView-item,.t-Cards-item):hover .a-CardView-media :is(img,.a-CardView-mediaImg) {
+  transform:scale(1.045);
+}
+.ik-listings .a-CardView-main {padding:2px 3px 5px;}
+.ik-listings :is(.a-CardView-title,.t-Card-title) {
+  color:var(--ik-deep);font-size:1.12rem;font-weight:790;letter-spacing:-.02em;
+}
+.ik-listings :is(.a-CardView-subTitle,.a-CardView-body,.a-CardView-secondaryBody) {
+  color:#64726c;line-height:1.58;
+}
+.ik-listings :is(.a-CardView-body,.a-CardView-secondaryBody) {font-size:.93rem;}
+.ik-listings :is(.a-CardView-button,.t-Card-btn) {
+  background:var(--ik-deep)!important;border:1px solid var(--ik-deep)!important;
+  border-radius:10px;color:#fff!important;padding:10px 16px;
+  font-weight:730;text-decoration:none;transition:background .2s;
+}
+.ik-listings :is(.a-CardView-button,.t-Card-btn):hover {background:var(--ik-teal)!important;}
+/* Cards with custom HTML: don't distort pictures or APEX icons. */
+.ik-listings .t-Cards-item img:not(.fa):not(.t-Icon) {max-width:100%;height:auto;object-fit:cover;}
+
+/* 08  Pages 2 / 7 — details, images, enquiry */
+.ik-details .t-Region-body {padding:clamp(20px,3vw,34px);line-height:1.72;}
+.ik-details :is(h1,h2,h3) {color:var(--ik-deep);letter-spacing:-.02em;}
+.ik-details :is(.ik-price,.property-price) {font-size:clamp(1.4rem,3vw,2rem);color:var(--ik-clay-hover);font-weight:830;}
+.ik-gallery .t-Region-body {padding:18px;}
+.ik-gallery :is(.a-CardView-media img,.t-Cards-item img,.t-Report-report img,.t-Region-body>img) {
+  display:block;max-width:100%;width:100%;max-height:440px;
+  object-fit:cover;border-radius:13px;
+}
+.ik-gallery :is(.a-CardView-media,.t-Cards-item) {overflow:hidden;border-radius:13px;}
+
+/* 09  Pages 3 / 4 — image upload forms */
+.ik-upload .t-Region-body {padding:clamp(20px,3vw,32px);}
+.ik-upload :is(input[type="file"],.apex-item-file) {
+  background:#f4f5ee;border:2px dashed #9fbdb3;
+  border-radius:14px;padding:18px;max-width:100%;color:var(--ik-deep);
+}
+.ik-upload :is(input[type="file"],.apex-item-file):hover {background:#e8f1ea;border-color:var(--ik-teal);}
+
+/* 10  Page 8 — dashboard. Keep the current four live SQL values. */
+.ik-dashboard.t-Region {background:transparent!important;border:0!important;box-shadow:none!important;}
+.ik-dashboard .t-Region-body {padding:8px 0 16px;}
+.ik-dashboard :is(.t-Cards-item,.a-CardView-item,.t-Region-body .t-Region) {
+  background:linear-gradient(135deg,#f5eee4,#e6f0e9)!important;
+  border:1px solid #c8d8d0!important;
+  border-radius:15px!important;
+  box-shadow:0 9px 24px rgba(27,58,59,.09);
+  transition:transform .2s,box-shadow .2s;
+}
+.ik-dashboard :is(.t-Cards-item,.a-CardView-item,.t-Region-body .t-Region):hover {
+  transform:translateY(-3px);box-shadow:var(--ik-lift);
+}
+.ik-dashboard :is(.t-Card-title,.a-CardView-title,.t-Region-title) {
+  color:var(--ik-deep);font-weight:770;
+}
+.ik-dashboard :is(.a-CardView-body,.a-CardView-secondaryBody) {
+  color:var(--ik-clay-hover);font-size:1.65rem;font-weight:840;
+}
+/* If the statistics are generated as a classic one-row report, tint cells too. */
+.ik-dashboard .t-Report-report td {background:#f4efe6;color:var(--ik-deep);font-weight:710;}
+.ik-dashboard .t-Report-report td:hover {background:#e6f0ea;}
+
+/* 11  Pages 8 / 10 — interactive reports, rows, selection and search */
+:is(.ik-viewings,.ik-leads) {
+  border:1px solid var(--ik-border);border-radius:16px;
+  background:var(--ik-surface);box-shadow:var(--ik-shadow);
+}
+:is(.ik-viewings,.ik-leads) .a-IRR-toolbar {
+  padding:12px 13px;background:#edf1ea;border-bottom:1px solid #d3dfd8;
+}
+:is(.ik-viewings,.ik-leads) :is(.a-IRR-tableContainer,.a-IRR-content,.t-Report) {overflow-x:auto;}
+:is(.ik-viewings,.ik-leads) :is(.a-IRR-table,.t-Report-report) {border-collapse:collapse;width:100%;}
+:is(.ik-viewings,.ik-leads) :is(.a-IRR-table,.t-Report-report) th {
+  background:#e0eae3!important;color:var(--ik-deep)!important;
+  padding:13px 14px;font-weight:760;
+  border-bottom:1px solid #cbd9d1;white-space:nowrap;
+}
+:is(.ik-viewings,.ik-leads) :is(.a-IRR-table,.t-Report-report) td {
+  color:#354d4d;padding:13px 14px;line-height:1.5;
+  border-bottom:1px solid #e0e5df;vertical-align:middle;
+}
+:is(.ik-viewings,.ik-leads) :is(.a-IRR-table,.t-Report-report) tbody tr:nth-child(even) td {
+  background:#f4f7f2;
+}
+:is(.ik-viewings,.ik-leads) :is(.a-IRR-table,.t-Report-report) tbody tr:hover td {
+  background:#e5f2ed!important;
+}
+:is(.ik-viewings,.ik-leads) :is(.a-IRR-search-field,input[type="search"]) {
+  min-height:40px;border-radius:10px;background:#fffdf9;
+}
+:is(.ik-viewings,.ik-leads) :is(.a-IRR-table,.t-Report-report) td a {
+  color:#1a6d77;font-weight:680;
+}
+:is(.ik-viewings,.ik-leads) :is(.a-IRR-table,.t-Report-report) td a:hover {
+  color:#b35b46;text-decoration:underline;
+}
+.ik-leads :is(.a-IRR-table,.t-Report-report) td {overflow-wrap:anywhere;}
+
+/* 12  Page 9 — MANAGE VIEWING: fix floating label/value overlaps.
+   The v2 rule added padding to display-only values but let APEX float the
+   label on top. Instead create a normal-flow label ABOVE a value container. */
+.t-Body-content .ik-manage.t-Region {
+  max-width:1100px;margin-inline:auto;
+  background:linear-gradient(180deg,#fffaf5,#f5f3ed)!important;
+  border:1px solid #d5ded7;box-shadow:0 18px 44px rgba(25,65,66,.11);
+}
+.ik-manage .t-Region-header {
+  padding:9px 14px;background:linear-gradient(100deg,#e4efea,#f8f0e6)!important;
+  border-bottom:1px solid #cfddd3;
+}
+.ik-manage .t-Region-header .t-Region-title {font-size:1.25rem;color:var(--ik-deep);}
+.ik-manage .t-Region-body {padding:clamp(18px,3vw,34px);}
+/* Each item is its own readable two-line information tile. */
+.ik-manage .t-Form-fieldContainer {
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:stretch!important;
+  gap:7px!important;
+  position:relative!important;
+  min-height:0!important;
+  margin:0 0 12px!important;
+  padding:13px 16px!important;
+  background:rgba(233,243,238,.70)!important;
+  border:1px solid #cbdcd3!important;
+  border-radius:13px!important;
+  box-sizing:border-box;
+}
+/* Oracle APEX floating labels must be returned to normal document flow. */
+.ik-manage .t-Form-fieldContainer .t-Form-labelContainer {
+  position:static!important;inset:auto!important;
+  transform:none!important;display:block!important;
+  flex:none!important;width:100%!important;max-width:100%!important;
+  min-height:0!important;height:auto!important;
+  padding:0!important;margin:0!important;
+  text-align:left!important;
+}
+.ik-manage .t-Form-fieldContainer .t-Form-label,
+.ik-manage .t-Form-fieldContainer--floatingLabel .t-Form-label {
+  display:block!important;position:static!important;inset:auto!important;
+  transform:none!important;max-width:100%!important;width:auto!important;
+  height:auto!important;padding:0!important;margin:0!important;
+  font-size:.81rem!important;font-weight:760!important;line-height:1.4!important;
+  color:#486762!important;background:transparent!important;
+  white-space:normal!important;overflow:visible!important;
+}
+.ik-manage .t-Form-fieldContainer .t-Form-inputContainer {
+  position:relative!important;inset:auto!important;
+  flex:0 1 auto!important;display:block!important;
+  width:100%!important;max-width:100%!important;min-width:0!important;
+  min-height:0!important;height:auto!important;
+  padding:0!important;margin:0!important;
+}
+.ik-manage .t-Form-fieldContainer .t-Form-itemWrapper {
+  position:relative!important;display:block!important;
+  width:100%!important;min-width:0!important;max-width:100%!important;
+  padding:0!important;margin:0!important;
+}
+/* No second background box around read-only values: tile already supplies it. */
+.ik-manage :is(.apex-item-display-only,.display_only,span.apex-item-display-only) {
+  position:static!important;display:block!important;
+  width:100%!important;min-height:0!important;height:auto!important;
+  padding:0!important;margin:0!important;
+  background:transparent!important;border:0!important;border-radius:0!important;
+  color:#213e42!important;font-size:1.02rem!important;font-weight:680!important;
+  line-height:1.52!important;white-space:normal!important;
+  overflow-wrap:anywhere;
+}
+.ik-manage .t-Form-fieldContainer :is(select.apex-item-select,textarea.apex-item-textarea,input.apex-item-text) {
+  display:block;position:relative!important;width:100%;max-width:100%;
+  box-sizing:border-box;min-height:47px;padding:11px 13px;
+  color:var(--ik-deep);background:#fffefa!important;
+  border:1px solid #acc7bd;border-radius:10px;
+  font-size:1rem;line-height:1.55;
+}
+.ik-manage .t-Form-fieldContainer textarea.apex-item-textarea {min-height:140px;resize:vertical;}
+.ik-manage .t-Form-fieldContainer :is(select,textarea,input):focus {
+  border-color:var(--ik-teal);box-shadow:0 0 0 3px rgba(57,122,121,.16);
+}
+/* Working edit fields appear in a different, warmer section of the form. */
+.ik-manage :is(#P9_BOOKING_STATUS_CONTAINER,#P9_FOLLOW_UP_STATUS_CONTAINER,
+  #P9_FOLLOW_UP_SUMMARY_CONTAINER,#P9_FOLLOW_UP_NOTES_CONTAINER) {
+  background:#fff4e8!important;border-color:#e4ccb6!important;
+}
+/* Visual group separators; no additional regions or SQL changes needed. */
+.ik-manage :is(#P9_CLIENT_FIRST_NAME_CONTAINER,#P9_VIEWING_START_CONTAINER,
+ #P9_BOOKING_STATUS_CONTAINER) {
+  margin-top:22px!important;
+  border-top:3px solid #93b9aa!important;
+}
+.ik-manage #P9_BOOKING_REFERENCE_CONTAINER {
+  border-left:4px solid var(--ik-clay)!important;
+}
+/* Optional status-responsive colours. Only apply when LOV return values match. */
+.ik-manage #P9_BOOKING_STATUS:has(option:checked[value="CONFIRMED" i]) {
+  background:#e1f3e9!important;border-color:#6eae89;color:#205640;
+}
+.ik-manage #P9_BOOKING_STATUS:has(option:checked[value="CANCELLED" i]) {
+  background:#fce8e6!important;border-color:#cc8880;color:#843932;
+}
+.ik-manage #P9_BOOKING_STATUS:has(option:checked[value="REQUESTED" i]) {
+  background:#fff3d9!important;border-color:#cda96a;color:#74501c;
+}
+.ik-manage #P9_BOOKING_STATUS:has(option:checked[value="COMPLETED" i]) {
+  background:#e3eef9!important;border-color:#87a9cb;color:#285a82;
+}
+.ik-manage .t-Region-buttons--bottom {
+  display:flex!important;flex-wrap:wrap;align-items:center;gap:12px;
+  padding:17px 24px;background:#eaf1eb!important;border-top:1px solid #d0e0d5;
+}
+.ik-manage .t-Region-buttons--bottom .t-Button {min-height:45px;padding:10px 19px;}
+
+/* 13  Page 11 — preserve the FAQ's existing custom teal HTML */
+.ik-faq .t-Region-body {padding:clamp(15px,2vw,24px);}
+.ik-faq .ikhaya-faq :is(.faq-hero,.faq-hero-card) {
+  border-radius:19px;box-shadow:0 16px 34px rgba(23,58,64,.14);
+}
+.ik-faq .ikhaya-faq :is(details,.faq-item) {
+  border-radius:12px;transition:box-shadow .2s,border-color .2s;
+}
+.ik-faq .ikhaya-faq :is(details,.faq-item):hover {box-shadow:0 6px 18px rgba(23,58,64,.10);}
+.ik-faq .ikhaya-faq summary {cursor:pointer;}
+.ik-faq .ikhaya-faq details[open] {border-color:#9cbab5;}
+
+/* 14  Page 9999 — login */
+.t-Login-container .t-Login-region,.ik-login.t-Region {
+  background:linear-gradient(145deg,#fffdf9,#edf5ed)!important;
+  border:1px solid #c9d9d1;border-radius:20px;
+  box-shadow:0 22px 46px rgba(21,60,64,.18);
+}
+.t-Login-container .t-Login-title,.ik-login .t-Region-title {color:var(--ik-deep);font-weight:820;}
+.t-Login-container .t-Button--hot,.ik-login .t-Button--hot {min-height:47px;}
+
+/* 15  Staff access-control/admin pages (10000, 10010-10014) */
+.ik-admin .t-Region-body {padding:clamp(18px,2.6vw,30px);}
+.ik-admin :is(.a-IRR-table,.t-Report-report) th {background:#e6efe9;color:var(--ik-deep);}
+.ik-admin :is(.a-IRR-table,.t-Report-report) td {border-bottom:1px solid #dfe5df;}
+.ik-admin .t-WizardSteps {border-radius:12px;}
+
+/* 16  Small-screen + accessible movement */
+@media(max-width:1100px) {
+  .ik-listings .a-CardView-media {aspect-ratio:4/3;}
+  .ik-search .t-Region-body {padding:16px;}
+}
+@media(max-width:850px) {
+  :is(.ik-viewings,.ik-leads) :is(.a-IRR-table,.t-Report-report) {min-width:620px;}
+  .ik-manage .t-Region-body {padding:18px;}
+  .ik-welcome .t-Region-body {padding-top:40px!important;}
+}
+@media(max-width:600px) {
+  .t-Body-contentInner {padding-inline:9px;}
+  .ik-welcome .t-Region-buttons--bottom {padding:10px 16px 28px!important;gap:10px!important;}
+  .ik-welcome .t-Region-buttons--bottom :is(.t-Region-buttons-left,.t-Region-buttons-right) {
+    width:100%!important;flex:0 0 100%!important;
+  }
+  .ik-welcome :is(.ik-action-buy,.ik-action-rent).t-Button {width:100%;min-width:0;}
+  .ik-manage .t-Form-fieldContainer {padding:12px!important;}
+  .ik-manage .t-Region-buttons--bottom .t-Button {flex:1 1 auto;}
+}
+@media(prefers-reduced-motion:reduce) {
+  html {scroll-behavior:auto;}
+  .t-Button,.t-Body-nav .t-TreeNav .a-TreeView-content,
+  .ik-listings :is(.a-CardView-item,.t-Cards-item,.a-CardView-media img,.a-CardView-mediaImg),
+  .ik-dashboard :is(.t-Cards-item,.a-CardView-item,.t-Region-body .t-Region) {
+    transition:none!important;transform:none!important;
+  }
+}
+
+
+/* ============================================================================
+   17 | WELCOME / CARDS / FAQ / STAFF COMPONENT DESIGN.
+   04 November 2026 | Welcome contrast, dynamic typography, property stories,
+   frameless search, lifted cards, FAQ motion and staff dashboard hierarchy.
+   Keep all existing Infobip, booking, and APEX data processes unchanged.
+   ============================================================================ */
+
+:root {
+  --ik-serif:Georgia,"Iowan Old Style","Palatino Linotype",serif;
+  --ik-highlight:#e6b47e;
+  --ik-shell:#f0e8dd;
+  --ik-dark-contrast:#10383d;
+}
+
+/* Typography — serif used sparingly for memorable display headings */
+.ik-welcome .ik-welcome-headline,
+.ik-details .ik-story-title,
+.ik-faq .ikhaya-faq :is(.faq-hero h1,.faq-hero h2,.faq-hero-card h1,.faq-hero-card h2),
+.ik-faq .ikhaya-faq :is(.faq-section > h2,.faq-section > h3) {
+  font-family:var(--ik-serif);letter-spacing:-.045em;
+}
+
+/* Page 5: Fix cream-on-cream Rent button. Original high-specificity span rule was
+   stronger than the button's colour; target the label and ALL inner elements. */
+.ik-welcome .t-Button.ik-action-rent,
+.ik-welcome .t-Button.ik-action-rent :is(span,strong,b,small,i,.t-Button-label),
+.ik-welcome a.ik-action-rent,
+.ik-welcome a.ik-action-rent :is(span,strong,b,small,i) {
+  color:#13393f!important;opacity:1!important;
+  text-shadow:none!important;-webkit-text-fill-color:#13393f!important;
+}
+.ik-welcome .t-Button.ik-action-rent,
+.ik-welcome a.ik-action-rent {
+  background:#fff8eb!important;border:2px solid #fff8eb!important;
+  box-shadow:0 8px 25px rgba(3,28,32,.13)!important;
+}
+.ik-welcome .t-Button.ik-action-rent:hover,
+.ik-welcome a.ik-action-rent:hover {
+  background:#f2dbba!important;border-color:#f2dbba!important;
+  transform:translateY(-4px) scale(1.025);
+}
+.ik-welcome .t-Button.ik-action-buy,
+.ik-welcome .t-Button.ik-action-buy :is(span,strong,b,small,i,.t-Button-label) {
+  color:#fff!important;-webkit-text-fill-color:#fff!important;
+}
+.ik-welcome .t-Button.ik-action-buy:hover {transform:translateY(-4px) scale(1.025);}
+.ik-welcome .t-Region-body {padding-bottom:20px!important;}
+.ik-welcome .ik-welcome-copy {max-width:850px;margin:0 auto 6px;text-align:center;}
+.ik-welcome .ik-welcome-kicker {
+  display:inline-flex;align-items:center;gap:10px;
+  font-size:.78rem;font-weight:750;letter-spacing:.19em;text-transform:uppercase;
+  color:#f0cda8!important;margin:0 auto 17px;
+}
+.ik-welcome .ik-welcome-kicker::before,
+.ik-welcome .ik-welcome-kicker::after {
+  content:"";display:inline-block;width:24px;height:1px;background:#e6b47e;
+}
+.ik-welcome .ik-welcome-headline {
+  color:#fffaf2!important;font-size:clamp(2.55rem,5vw,4.7rem)!important;
+  font-weight:700!important;line-height:1.08!important;
+  margin:0 0 18px!important;text-shadow:0 4px 24px rgba(0,18,22,.23);
+}
+.ik-welcome .ik-welcome-headline em {color:#f3ca9d!important;font-style:italic;}
+.ik-welcome .ik-welcome-intro {
+  color:#f4f1ea!important;max-width:680px!important;
+  font-size:clamp(1.03rem,1.4vw,1.2rem)!important;line-height:1.8!important;
+  margin:0 auto 12px!important;
+}
+.ik-welcome .ik-welcome-note {color:#d6eae5!important;font-size:.88rem!important;margin:6px auto 0!important;}
+/* Existing buttons are in BELOW REGION legacy slots: don't replace with HTML. */
+.ik-welcome .t-Region-buttons--bottom {padding-top:16px!important;gap:20px!important;}
+
+/* Pages 1 and 6: one uninterrupted filter surface, without header divider */
+.ik-search.t-Region {background:#fffaf5!important;overflow:visible;}
+.ik-search .t-Region-header {
+  background:transparent!important;border:0!important;
+  border-bottom:0!important;box-shadow:none!important;
+  padding:23px 25px 0!important;min-height:0;
+}
+.ik-search .t-Region-header::before,
+.ik-search .t-Region-header::after {border:0!important;box-shadow:none!important;}
+.ik-search .t-Region-title {
+  color:#19484c!important;font-family:var(--ik-serif);
+  font-size:clamp(1.35rem,2vw,1.75rem)!important;font-weight:700!important;
+  letter-spacing:-.035em;
+}
+.ik-search .t-Region-bodyWrap {border-top:0!important;box-shadow:none!important;}
+.ik-search .t-Region-body {
+  background:transparent!important;padding:19px 22px 24px!important;
+  border:0!important;box-shadow:none!important;
+}
+.ik-search .t-Form-fieldContainer {transition:transform .18s ease;}
+.ik-search .t-Form-fieldContainer:focus-within {transform:translateY(-2px);}
+.ik-search .t-Button--hot,
+.ik-search .ik-search-primary.t-Button {
+  background:#225e61!important;color:white!important;border:1px solid #225e61!important;
+}
+.ik-search .t-Button--hot:hover,
+.ik-search .ik-search-primary.t-Button:hover {
+  background:#174448!important;transform:translateY(-2px);
+}
+
+/* More buoyant cards — preserve photos; no JavaScript hover required */
+.ik-listings :is(.a-CardView-item,.t-Cards-item) {
+  transition:transform .34s cubic-bezier(.2,.8,.2,1),
+             box-shadow .34s ease,border-color .34s ease;
+  will-change:transform;
+}
+.ik-listings :is(.a-CardView-item,.t-Cards-item):hover,
+.ik-listings :is(.a-CardView-item,.t-Cards-item):focus-within {
+  transform:translateY(-11px) scale(1.015);
+  box-shadow:0 28px 54px rgba(17,53,54,.23);
+  border-color:#8ebcb0;
+  position:relative;z-index:2;
+}
+.ik-listings :is(.a-CardView-item,.t-Cards-item):hover .a-CardView-media :is(img,.a-CardView-mediaImg),
+.ik-listings :is(.a-CardView-item,.t-Cards-item):focus-within .a-CardView-media :is(img,.a-CardView-mediaImg) {
+  transform:scale(1.075);
+}
+.ik-listings .a-CardView-title {font-family:var(--ik-serif);font-size:1.25rem;}
+.ik-listings .a-CardView-button {font-size:.9rem;letter-spacing:.01em;}
+
+/* Pages 2/7 — Real dynamic listing content from existing P2/P7 APEX items. */
+.ik-details .ik-property-story {color:#204446;max-width:1180px;margin:0 auto;}
+.ik-details .ik-story-intro {position:relative;overflow:hidden;
+  background:linear-gradient(118deg,#173c43 0%,#2d6869 74%,#357a74 100%);
+  border-radius:22px;color:white;padding:clamp(25px,4vw,55px);
+  box-shadow:0 18px 42px rgba(13,57,62,.18);}
+.ik-details .ik-story-intro::after {content:"";position:absolute;right:-74px;top:-100px;
+  width:300px;height:300px;border:1px solid rgba(255,255,255,.18);
+  border-radius:50%;pointer-events:none;}
+.ik-details .ik-story-eyebrow {font-size:.76rem;letter-spacing:.18em;
+  font-weight:800;text-transform:uppercase;color:#f4c99f;margin:0 0 11px;}
+.ik-details .ik-story-title {color:#fffdf6;font-weight:700;
+  font-size:clamp(2rem,3.4vw,3.25rem);line-height:1.12;margin:0 0 18px;}
+.ik-details .ik-story-lede {color:#ebf6f2;margin:0 0 17px;
+  font-size:clamp(1rem,1.5vw,1.17rem);line-height:1.7;}
+.ik-details .ik-story-price {display:inline-flex;align-items:center;flex-wrap:wrap;
+  background:#fff7e9;color:#164145;padding:11px 18px;border-radius:13px;
+  font-size:clamp(1.35rem,2.6vw,2.15rem);font-weight:800;letter-spacing:-.03em;
+  box-shadow:0 8px 26px rgba(0,0,0,.10);}
+.ik-details .ik-story-grid {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:14px;margin:22px 0;}
+.ik-details .ik-story-fact--wide {grid-column:span 2;}
+.ik-details .ik-story-fact {border:1px solid #d7e5de;
+  background:linear-gradient(145deg,#fffaf2,#e8f2ed);
+  border-radius:16px;padding:18px 20px;transition:transform .23s,box-shadow .23s;}
+.ik-details .ik-story-fact:hover {transform:translateY(-4px);box-shadow:0 13px 26px rgba(17,53,54,.12);}
+.ik-details .ik-story-label {display:block;font-size:.72rem;
+  letter-spacing:.13em;text-transform:uppercase;color:#587c77;font-weight:750;margin-bottom:6px;}
+.ik-details .ik-story-value {display:block;color:#143d41;font-size:1.1rem;
+  font-weight:730;line-height:1.5;overflow-wrap:anywhere;}
+.ik-details .ik-story-section {border-radius:18px;background:#fffaf4;
+  padding:clamp(21px,3vw,34px);border:1px solid #e4ded5;margin:16px 0;}
+.ik-details .ik-story-section h3 {font-family:var(--ik-serif);
+  font-size:clamp(1.35rem,2.2vw,1.85rem);margin:0 0 12px;color:#153c41;}
+.ik-details .ik-story-description {white-space:pre-line;
+  font-size:1.02rem;line-height:1.84;color:#45605e;margin:0;overflow-wrap:anywhere;}
+.ik-details .ik-story-agent {display:flex;align-items:center;gap:15px;}
+.ik-details .ik-story-agent-icon {width:50px;height:50px;flex:none;
+  display:grid;place-items:center;background:#d9ede7;color:#16575a;
+  border-radius:16px;font-size:1.4rem;font-weight:800;}
+.ik-details .ik-story-agent-body {min-width:0;}
+.ik-details .ik-story-agent .ik-story-value {font-size:1.07rem;}
+/* Remove excess white chrome, but do not collapse existing photo gallery regions. */
+.ik-details .t-Region-body {padding:clamp(15px,2.3vw,27px)!important;}
+.ik-book-button.t-Button,
+.ik-details .ik-book-button.t-Button {
+  background:#1d6264!important;border:1px solid #1d6264!important;
+  color:white!important;box-shadow:0 10px 23px rgba(29,98,100,.17);
+  border-radius:12px!important;
+}
+.ik-book-button.t-Button:hover,
+.ik-details .ik-book-button.t-Button:hover {background:#134b50!important;
+  border-color:#134b50!important;transform:translateY(-3px);}
+
+/* Staff portal: create hierarchy using EXISTING live metric values, not static counts */
+.ik-dashboard :is(.t-Card-title,.a-CardView-title),
+.ik-dashboard .t-Region .t-Region-title {font-size:.94rem!important;
+  letter-spacing:.025em;font-weight:760!important;color:#225158!important;}
+.ik-dashboard .t-Region .t-Region-body,
+.ik-dashboard .t-Cards-item .t-Card-body,
+.ik-dashboard .a-CardView-item .a-CardView-body,
+.ik-dashboard .ik-metric-value {
+  color:#123f44!important;font-size:clamp(2.25rem,4vw,3.25rem)!important;
+  font-weight:850!important;line-height:1.2!important;
+  letter-spacing:-.055em!important;
+}
+.ik-dashboard .t-Region .t-Region-body {padding:16px 18px 21px;}
+.ik-dashboard .t-Region .t-Region-header {border-bottom:0;background:transparent;}
+.ik-dashboard .t-Region .t-Region {background:#ecf4ef!important;}
+.ik-dashboard .ik-metric-label {font-size:.78rem!important;font-weight:760!important;
+  color:#52736e!important;letter-spacing:.06em;text-transform:uppercase;}
+.ik-dashboard :is(.t-Cards-item,.a-CardView-item,.t-Region-body .t-Region):hover {
+  transform:translateY(-8px) scale(1.01);
+  box-shadow:0 23px 43px rgba(25,65,66,.17);
+}
+
+/* Report names: visually highlight the actual column value and allow keyboard focus. */
+:is(.ik-viewings,.ik-leads) .ik-client-name {
+  display:inline-block;border-radius:7px;padding:4px 7px;margin:-4px -7px;
+  color:#1b545a;font-weight:750;letter-spacing:.002em;
+  transition:transform .2s ease,background .2s ease,box-shadow .2s ease;
+}
+:is(.ik-viewings,.ik-leads) .ik-client-name:hover,
+:is(.ik-viewings,.ik-leads) .ik-client-name:focus-visible {
+  transform:translateY(-3px) scale(1.08);
+  background:#d1ebe4;box-shadow:0 8px 20px rgba(18,75,79,.14);
+  outline:none;position:relative;z-index:1;
+}
+/* Gentle hover treatment even before a Name-column HTML expression is assigned */
+.ik-viewings .a-IRR-table tbody td:nth-child(2):hover,
+.ik-leads .a-IRR-table tbody td:first-child:hover {color:#115960;}
+
+/* Page 11: animated, readable content, all question text remains available. */
+.ik-faq .ikhaya-faq {color:#224648;}
+.ik-faq .ikhaya-faq :is(.faq-hero,.faq-hero-card) {
+  background:linear-gradient(115deg,#193d44,#367675)!important;
+  color:#f8f5ee!important;border-radius:23px;
+  box-shadow:0 23px 48px rgba(23,64,68,.18)!important;
+}
+.ik-faq .ikhaya-faq :is(.faq-hero,.faq-hero-card) :is(h1,h2,p,span,strong) {
+  color:#fff9ee!important;}
+.ik-faq .ikhaya-faq :is(.faq-hero,.faq-hero-card) :is(h1,h2) {
+  font-family:var(--ik-serif);font-size:clamp(2.1rem,3.5vw,3.5rem)!important;
+  line-height:1.13;letter-spacing:-.04em;
+}
+.ik-faq .ikhaya-faq :is(.faq-section > h2,.faq-section > h3) {
+  font-family:var(--ik-serif);font-size:clamp(1.4rem,2.5vw,2rem);
+  color:#1a5054;letter-spacing:-.03em;line-height:1.24;
+}
+.ik-faq .ikhaya-faq :is(details,.faq-item) {
+  background:#fffdf8;border:1px solid #e2e2d8;
+  box-shadow:0 4px 14px rgba(29,75,75,.05);
+  transition:transform .26s cubic-bezier(.22,.7,.22,1),
+    box-shadow .26s ease,background .26s ease;
+}
+.ik-faq .ikhaya-faq :is(details,.faq-item):hover {
+  transform:translateY(-5px);
+  background:#f1f7f2;box-shadow:0 15px 31px rgba(23,64,68,.13);
+}
+.ik-faq .ikhaya-faq details summary {padding:13px 16px;
+  color:#1f5258;font-weight:770;font-size:1.04rem;}
+.ik-faq .ikhaya-faq details[open] {background:#fbfcf7;border-color:#9ebbb4;}
+.ik-faq .ikhaya-faq .faq-section {scroll-margin-top:85px;}
+@supports (animation-timeline:view()) {
+  .ik-faq .ikhaya-faq .faq-section {
+    animation:ik-faq-reveal linear both;
+    animation-timeline:view();animation-range:entry 0% entry 35%;
+  }
+  @keyframes ik-faq-reveal {
+    from {opacity:.55;transform:translateY(22px);}
+    to {opacity:1;transform:translateY(0);}
+  }
+}
+
+/* Replace brown login buttons and other explicit booking CTAs with teal */
+.ik-login .t-Button--hot,.t-Login-container .t-Button--hot,
+.ik-save-button.t-Button {background:#1d6264!important;border-color:#1d6264!important;
+  color:#fff!important;box-shadow:0 7px 20px rgba(19,75,80,.18);}
+.ik-login .t-Button--hot:hover,.t-Login-container .t-Button--hot:hover,
+.ik-save-button.t-Button:hover {background:#134d51!important;border-color:#134d51!important;}
+
+/* Adapt to narrow screens and user accessibility preferences */
+@media(max-width:760px) {
+  .ik-details .ik-story-grid {grid-template-columns:repeat(2,minmax(0,1fr));}
+  .ik-details .ik-story-intro {padding:25px 20px;}
+  .ik-search .t-Region-header {padding:18px 17px 0!important;}
+  .ik-search .t-Region-body {padding:15px 15px 20px!important;}
+}
+@media(max-width:520px) {
+  .ik-details .ik-story-grid {grid-template-columns:1fr;}
+  .ik-details .ik-story-fact--wide {grid-column:auto;}
+  .ik-welcome .ik-welcome-headline {font-size:2.45rem!important;}
+  .ik-faq .ikhaya-faq details summary {font-size:.96rem;}
+  .ik-listings :is(.a-CardView-item,.t-Cards-item):hover,
+  .ik-listings :is(.a-CardView-item,.t-Cards-item):focus-within {
+    transform:translateY(-5px) scale(1.005);
+  }
+}
+@media(prefers-reduced-motion:reduce) {
+  .ik-listings :is(.a-CardView-item,.t-Cards-item),
+  .ik-details .ik-story-fact,
+  .ik-faq .ikhaya-faq :is(details,.faq-item,.faq-section),
+  :is(.ik-viewings,.ik-leads) .ik-client-name {
+    animation:none!important;transition:none!important;
+    transform:none!important;
+  }
+}
+
+
+/* ========== PAGE 11: MOVED FROM STATIC REGION SOURCE ========== */
+/* ==========================================
+   iKhayaLam Properties
+   Page 11 - FAQs & Enquiries
+   ========================================== */
+
+.ikhaya-faq {
+  --ikhaya-primary: #25465a;
+  --ikhaya-accent: #b38b62;
+  --ikhaya-text: #253341;
+  --ikhaya-muted: #637280;
+  --ikhaya-border: #e2e8ed;
+
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 12px 8px 40px;
+  color: var(--ikhaya-text);
+  font-family: inherit;
+  line-height: 1.65;
+}
+
+.ikhaya-faq * {
+  box-sizing: border-box;
+}
+
+.ikhaya-faq .faq-hero {
+  background: linear-gradient(
+    135deg,
+    #243d4b,
+    #365d70
+  );
+  color: white;
+  padding: 40px 32px;
+  border-radius: 14px;
+  margin-bottom: 28px;
+}
+
+.ikhaya-faq .faq-eyebrow {
+  color: #e4c29b;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 8px;
+}
+
+.ikhaya-faq .faq-hero h1 {
+  color: white;
+  font-size: 30px;
+  font-weight: 700;
+  line-height: 1.25;
+  margin: 0 0 12px;
+}
+
+.ikhaya-faq .faq-hero p {
+  color: #edf2f5;
+  max-width: 680px;
+  margin: 0;
+  font-size: 15px;
+}
+
+.ikhaya-faq .faq-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 0 0 30px;
+}
+
+.ikhaya-faq .faq-nav a {
+  display: inline-block;
+  padding: 9px 15px;
+  border: 1px solid var(--ikhaya-border);
+  border-radius: 25px;
+  background: white;
+  color: var(--ikhaya-primary);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.ikhaya-faq .faq-nav a:hover,
+.ikhaya-faq .faq-nav a:focus-visible {
+  background: var(--ikhaya-primary);
+  color: white;
+}
+
+.ikhaya-faq .faq-section {
+  margin-bottom: 32px;
+  scroll-margin-top: 24px;
+}
+
+.ikhaya-faq .faq-section-title {
+  font-size: 21px;
+  font-weight: 700;
+  color: var(--ikhaya-primary);
+  padding-bottom: 12px;
+  margin: 0 0 16px;
+  border-bottom: 2px solid var(--ikhaya-border);
+}
+
+.ikhaya-faq .faq-section-desc {
+  color: var(--ikhaya-muted);
+  font-size: 14px;
+  margin-bottom: 18px;
+}
+
+.ikhaya-faq details {
+  scroll-margin-top: 24px;
+  background: white;
+  border: 1px solid var(--ikhaya-border);
+  border-radius: 10px;
+  margin-bottom: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 7px rgba(0,0,0,0.025);
+}
+
+.ikhaya-faq details[open] {
+  border-left: 4px solid var(--ikhaya-accent);
+}
+
+.ikhaya-faq summary {
+  display: list-item;
+  cursor: pointer;
+  padding: 16px 20px;
+  color: var(--ikhaya-primary);
+  font-size: 15px;
+  font-weight: 650;
+}
+
+.ikhaya-faq summary:hover {
+  background: #f8fafb;
+}
+
+.ikhaya-faq summary:focus-visible {
+  outline: 2px solid #126c9e;
+  outline-offset: -3px;
+}
+
+.ikhaya-faq .faq-answer {
+  padding: 0 20px 17px;
+  color: #4c5965;
+  font-size: 14px;
+}
+
+.ikhaya-faq .faq-answer p {
+  margin: 4px 0 10px;
+}
+
+.ikhaya-faq .faq-answer ol,
+.ikhaya-faq .faq-answer ul {
+  padding-left: 24px;
+  margin: 8px 0;
+}
+
+.ikhaya-faq .faq-answer li {
+  margin-bottom: 6px;
+}
+
+.ikhaya-faq .faq-answer strong {
+  color: var(--ikhaya-text);
+}
+
+.ikhaya-faq .faq-highlight {
+  background: #f3f7fa;
+  padding: 16px 18px;
+  border-radius: 8px;
+  margin: 12px 0;
+  border-left: 3px solid #5085a0;
+}
+
+.ikhaya-faq .faq-contact {
+  background: #f5f7f8;
+  border: 1px solid var(--ikhaya-border);
+  border-radius: 14px;
+  padding: 28px;
+  margin-top: 30px;
+  scroll-margin-top: 24px;
+}
+
+.ikhaya-faq .faq-contact h2 {
+  color: var(--ikhaya-primary);
+  font-size: 23px;
+  margin: 0 0 10px;
+}
+
+.ikhaya-faq .faq-contact p {
+  color: #53616e;
+  font-size: 14px;
+}
+
+.ikhaya-faq .faq-contact-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.ikhaya-faq .faq-contact-card {
+  background: white;
+  border: 1px solid var(--ikhaya-border);
+  border-radius: 10px;
+  padding: 20px;
+  min-width: 0;
+}
+
+.ikhaya-faq .faq-contact-card h3 {
+  color: var(--ikhaya-primary);
+  font-size: 17px;
+  margin: 0 0 10px;
+}
+
+.ikhaya-faq .faq-contact-card p {
+  margin: 8px 0;
+}
+
+.ikhaya-faq .faq-contact-card a:not(.faq-button) {
+  color: #12618b;
+  overflow-wrap: anywhere;
+}
+
+.ikhaya-faq .faq-button {
+  display: inline-block;
+  background: var(--ikhaya-primary);
+  color: white !important;
+  padding: 12px 20px;
+  border-radius: 7px;
+  font-weight: 600;
+  font-size: 14px;
+  text-decoration: none !important;
+  margin-top: 12px;
+}
+
+.ikhaya-faq .faq-button:hover,
+.ikhaya-faq .faq-button:focus-visible {
+  background: #163240;
+}
+
+.ikhaya-faq .faq-note {
+  background: #fffaf1;
+  border-left: 4px solid var(--ikhaya-accent);
+  padding: 14px 18px;
+  border-radius: 6px;
+  margin-top: 18px;
+  color: #66543d;
+  font-size: 13px;
+}
+
+.ikhaya-faq .faq-footer {
+  text-align: center;
+  padding: 28px 12px 0;
+  color: #75818a;
+  font-size: 12px;
+}
+
+@media (max-width: 700px) {
+  .ikhaya-faq {
+    padding: 8px 2px 25px;
+  }
+
+  .ikhaya-faq .faq-hero {
+    padding: 28px 20px;
+  }
+
+  .ikhaya-faq .faq-hero h1 {
+    font-size: 24px;
+  }
+
+  .ikhaya-faq .faq-contact-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .ikhaya-faq .faq-contact {
+    padding: 20px;
+  }
+
+  .ikhaya-faq .faq-section-title {
+    font-size: 19px;
+  }
+
+  .ikhaya-faq summary {
+    padding: 14px 16px;
+  }
+
+  .ikhaya-faq .faq-answer {
+    padding: 0 16px 16px;
+  }
+}
+
+
+
+/* ==============================================================
+   Integrated components based on confirmed Static Content + Cards SQL
+   06 November 2026 · single-file iKhayaLam design system
+   ============================================================== */
+:root {
+  --ik-v5-night:#153b41;
+  --ik-v5-forest:#24575a;
+  --ik-v5-mint:#dceee7;
+  --ik-v5-warm:#fffaf2;
+  --ik-v5-clay:#bd705b;
+}
+
+/* Page 5: graphic presence and much better contrast. The two original
+   APEX buttons stay separate; ONLY their visual treatment changes. */
+.t-Body-content .ik-welcome.t-Region {
+  background:radial-gradient(circle at 95% 4%,rgba(245,208,164,.22),transparent 34%),
+             radial-gradient(circle at 0% 100%,rgba(133,205,189,.18),transparent 45%),
+             linear-gradient(118deg,#12353d,#235c5e 65%,#327975)!important;
+  border:1px solid #467a74!important;
+  box-shadow:0 23px 56px rgba(11,44,46,.21)!important;
+}
+.ik-welcome .t-Region-header {display:none!important;}
+.ik-welcome .ik-welcome-copy {max-width:880px;}
+.ik-welcome .ik-welcome-headline {font-size:clamp(2.55rem,5.3vw,5rem)!important;}
+.ik-welcome .ik-welcome-note {margin-top:14px!important;color:#e6f2ea!important;}
+.ik-welcome .ik-welcome-steps {
+  display:flex;gap:14px;align-items:center;justify-content:center;flex-wrap:wrap;
+  margin:22px auto 0;color:#f5e1c5;font-size:.82rem;
+  font-weight:740;letter-spacing:.11em;text-transform:uppercase;
+}
+.ik-welcome .t-Region-buttons--bottom {padding:12px 16px 40px!important;}
+.ik-welcome :is(.ik-action-buy,.ik-action-rent).t-Button {min-width:210px;min-height:55px;}
+.ik-welcome .t-Button.ik-action-rent,
+.ik-welcome .t-Button.ik-action-rent :is(span,strong,b,.t-Button-label) {
+  color:#11373b!important;-webkit-text-fill-color:#11373b!important;
+  text-shadow:none!important;opacity:1!important;
+}
+.ik-welcome .t-Button.ik-action-rent {background:#fffaf1!important;border-color:#fffaf1!important;}
+.ik-welcome .t-Button.ik-action-rent:hover,
+.ik-welcome .t-Button.ik-action-rent:focus-visible {background:#ffe8c9!important;}
+.ik-welcome .t-Button.ik-action-buy:hover,
+.ik-welcome .t-Button.ik-action-rent:hover {transform:translateY(-5px) scale(1.035);}
+
+/* Pages 2 and 7: dynamic property story (values all sourced from page items).
+   Avoid changing their APEX process, gallery, or button. */
+.ik-details .ik-property-story {max-width:1240px;}
+.ik-details .ik-story-intro {padding:clamp(28px,4vw,58px);
+  background:linear-gradient(118deg,#143941,#276166 73%,#327f74);
+  position:relative;isolation:isolate;}
+.ik-details .ik-story-intro:before {
+  content:"";position:absolute;right:-80px;bottom:-185px;
+  width:350px;height:350px;border:35px solid rgba(245,224,183,.11);
+  border-radius:50%;pointer-events:none;z-index:-1;
+}
+.ik-details .ik-story-topline {display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;gap:10px;margin-bottom:21px;}
+.ik-details .ik-story-topline .ik-story-eyebrow {margin:0;}
+.ik-details .ik-story-category {
+  display:inline-flex;background:rgba(255,255,255,.14);color:#fff!important;
+  border:1px solid rgba(255,255,255,.32);padding:6px 13px;
+  font-size:.8rem;letter-spacing:.07em;border-radius:100px;font-weight:760;
+}
+.ik-details .ik-story-title {max-width:890px;margin:0 0 18px;color:#fffaf2!important;
+  font-size:clamp(2.15rem,4.1vw,4rem);text-wrap:balance;}
+.ik-details .ik-story-title-in {font-weight:400;font-style:italic;color:#e7c79e;}
+.ik-details .ik-story-lede {max-width:680px;color:#ecf3ec;}
+.ik-details .ik-story-pricing {display:inline-flex;flex-direction:column;gap:3px;
+  padding:12px 19px;border:1px solid #e5d7bc;border-radius:14px;background:#fff8ea;
+  box-shadow:0 11px 25px rgba(13,47,45,.17);}
+.ik-details .ik-story-price-caption {text-transform:uppercase;letter-spacing:.13em;
+  font-size:.69rem;font-weight:800;color:#486d66;}
+/* V4 used a stand-alone price pill; V5 places it inside the new pricing panel. */
+.ik-details .ik-story-pricing .ik-story-price {
+  display:block;background:transparent;padding:0;box-shadow:none;border:0;border-radius:0;
+}
+.ik-details .ik-story-price {font-size:clamp(1.4rem,2.7vw,2.3rem);
+  color:#143d43;line-height:1.22;letter-spacing:-.04em;overflow-wrap:anywhere;}
+.ik-details .ik-story-grid {grid-template-columns:repeat(4,minmax(0,1fr));}
+.ik-details .ik-story-fact {position:relative;padding:25px 20px;
+  background:linear-gradient(142deg,#fff9f1,#e7f3eb);border:1px solid #cfded4;
+  overflow:hidden;transition:transform .25s ease,box-shadow .25s ease;}
+.ik-details .ik-story-fact:after {content:"";position:absolute;right:-10px;top:-23px;
+  width:70px;height:70px;border:12px solid rgba(67,126,115,.09);border-radius:50%;}
+.ik-details .ik-story-fact:hover,.ik-details .ik-story-fact:focus-within {
+  transform:translateY(-6px);box-shadow:0 17px 32px rgba(17,61,64,.13);}
+.ik-details .ik-story-fact--wide {grid-column:auto;}
+.ik-details .ik-story-label {color:#537b73;font-size:.72rem;}
+.ik-details .ik-story-value {font-size:clamp(1.08rem,1.7vw,1.35rem);color:#153e40;}
+.ik-details .ik-story-section {background:linear-gradient(140deg,#fffaf2,#f1f5ee);
+  border-color:#e0e4dc;box-shadow:0 8px 25px rgba(18,58,53,.06);}
+.ik-details .ik-story-section-kicker {margin:0 0 10px;font-weight:790;
+  font-size:.71rem;text-transform:uppercase;letter-spacing:.14em;color:#a36950;}
+.ik-details .ik-story-bottom {display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.ik-details .ik-story-bottom .ik-story-section {margin:0;min-width:0;}
+.ik-details .ik-story-address p:last-child {font-size:1.05rem;line-height:1.65;
+  color:#254e4e;overflow-wrap:anywhere;margin:0;}
+.ik-details .ik-story-agent {display:block;}
+.ik-details .ik-story-agent-row {display:flex;align-items:center;gap:13px;
+  color:#1a4548;font-size:1.1rem;overflow-wrap:anywhere;}
+.ik-details .ik-story-hint {font-size:.94rem;color:#57736f;margin:22px 4px 4px;}
+.ik-details .ik-story-section h2 {font-family:var(--ik-serif);
+  color:#173d42;font-size:clamp(1.5rem,2vw,1.9rem);margin:0 0 15px;}
+/* Match booking/enquiry actions, not the existing Infobip chat launcher. */
+.ik-book-button.t-Button,
+.ik-book-button.t-Button .t-Button-label {
+  background:#1b6767!important;color:#fff!important;border-color:#1b6767!important;
+  -webkit-text-fill-color:#fff!important;font-weight:760;
+}
+.ik-book-button.t-Button:hover {background:#124e53!important;border-color:#124e53!important;}
+
+/* Page 8: METRIC = card title, TOTAL = body. Existing SQL must remain as-is. */
+.ik-dashboard .a-CardView-title {font-size:1rem!important;color:#285d5e!important;
+  text-transform:none;letter-spacing:.02em;}
+.ik-dashboard .a-CardView-body,.ik-dashboard .a-CardView-secondaryBody,
+.ik-dashboard .t-Card-body {
+  font-size:clamp(2.7rem,4.2vw,4.25rem)!important;
+  font-weight:870!important;color:#153e42!important;line-height:1.06!important;
+  letter-spacing:-.065em!important;font-variant-numeric:tabular-nums;
+}
+.ik-dashboard :is(.a-CardView-item,.t-Cards-item) {min-height:158px;overflow:hidden;
+  background:linear-gradient(145deg,#fffaf1,#e4f2e9)!important;position:relative;}
+.ik-dashboard :is(.a-CardView-item,.t-Cards-item):before {content:"";position:absolute;
+  right:-22px;top:-40px;width:135px;height:135px;border-radius:50%;
+  background:rgba(52,127,114,.09);pointer-events:none;}
+.ik-dashboard .a-CardView-body {margin-top:10px;}
+.ik-dashboard :is(.a-CardView-item,.t-Cards-item):focus-within {outline:2px solid #328b81;outline-offset:2px;}
+
+/* Page 11 original FAQ CSS has been moved into this global file; the page
+   HTML file no longer contains a <style> block. */
+.ik-faq .ikhaya-faq {--ikhaya-primary:#1c4f55;--ikhaya-accent:#c07b5a;
+  --ikhaya-text:#234347;--ikhaya-muted:#607a77;--ikhaya-border:#d8e4dc;
+  max-width:1200px;padding:14px 12px 45px;}
+.ik-faq .t-Region-header {border-bottom:0;background:transparent;}
+.ik-faq .ikhaya-faq .faq-hero {padding:clamp(30px,4vw,65px);
+  background:radial-gradient(circle at 100% 5%,rgba(226,190,140,.2),transparent 43%),
+              linear-gradient(120deg,#173d45,#28696c)!important;}
+.ik-faq .ikhaya-faq .faq-hero h1 {font-size:clamp(2.4rem,4vw,4.4rem)!important;}
+.ik-faq .ikhaya-faq .faq-hero p {font-size:clamp(1rem,1.6vw,1.13rem);}
+.ik-faq .ikhaya-faq .faq-eyebrow {color:#f1d3b1!important;}
+.ik-faq .ikhaya-faq .faq-nav {position:sticky;top:46px;z-index:5;
+  padding:12px;border-radius:16px;
+  background:rgba(250,248,240,.93);border:1px solid #e0e9e1;
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  box-shadow:0 10px 28px rgba(17,61,57,.07);}
+.ik-faq .ikhaya-faq .faq-nav a {transition:transform .22s,background .22s,color .22s;}
+.ik-faq .ikhaya-faq .faq-nav a:hover,
+.ik-faq .ikhaya-faq .faq-nav a:focus-visible {transform:translateY(-3px);}
+.ik-faq .ikhaya-faq .faq-section {scroll-margin-top:125px;margin:36px 0 52px;}
+.ik-faq .ikhaya-faq .faq-section-title {font-size:clamp(1.7rem,2.7vw,2.6rem);
+  padding:0;margin:0 0 20px;border:0!important;}
+.ik-faq .ikhaya-faq .faq-section-title:before {content:"";display:inline-block;
+  width:6px;height:1em;border-radius:5px;background:linear-gradient(#cf9372,#2a7974);
+  margin-right:13px;vertical-align:-.12em;}
+.ik-faq .ikhaya-faq details {border-radius:14px;transition:box-shadow .22s,transform .22s;}
+.ik-faq .ikhaya-faq details:hover,.ik-faq .ikhaya-faq details:focus-within {
+  transform:translateY(-4px);box-shadow:0 15px 33px rgba(30,74,71,.12);}
+.ik-faq .ikhaya-faq summary {padding:19px 20px;font-size:1.04rem;color:#1e5457;}
+.ik-faq .ikhaya-faq summary:focus-visible {outline:3px solid #2a7c78;outline-offset:1px;}
+.ik-faq .ikhaya-faq .faq-answer {font-size:.97rem;line-height:1.75;}
+.ik-faq .ikhaya-faq .faq-contact {background:#edf5ed;border-radius:20px;}
+.ik-faq .ikhaya-faq .faq-contact-card {border-radius:16px;}
+
+@media (max-width:860px) {
+ .ik-details .ik-story-grid {grid-template-columns:repeat(2,minmax(0,1fr));}
+ .ik-faq .ikhaya-faq .faq-nav {top:42px;}
+}
+@media (max-width:580px) {
+ .ik-details .ik-story-grid,.ik-details .ik-story-bottom {grid-template-columns:1fr;}
+ .ik-details .ik-story-intro {padding:26px 20px;}
+ .ik-welcome :is(.ik-action-buy,.ik-action-rent).t-Button {width:100%;min-width:0;}
+ .ik-faq .ikhaya-faq .faq-nav {position:static;}
+ .ik-faq .ikhaya-faq .faq-section {scroll-margin-top:75px;}
+}
+@media (prefers-reduced-motion:reduce) {
+ .ik-details .ik-story-fact,.ik-faq .ikhaya-faq details,
+ .ik-faq .ikhaya-faq .faq-nav a {transition:none!important;transform:none!important;animation:none!important;}
+}
+
+
+/* ================================================================
+   iKhayaLam Properties | Application 103 | V6 unified refinements
+   Integrated into this standalone master stylesheet.
+   CSS-only: no changes to SQL, APEX items, authentication or APIs.
+   ================================================================ */
+
+:root {
+  --ikp-ink: #203b3a;
+  --ikp-forest: #173d40;
+  --ikp-coral: #c9846e;
+  --ikp-paper: #f7f5f1;
+  --ikp-line: #e8e5df;
+  --ikp-shadow: 0 10px 26px rgba(17, 44, 42, 0.09);
+  --ikp-radius: 18px;
+}
+
+/* 01 | A quiet, glassy header — keep the existing logo and blur. */
+.t-Header,
+.t-Header-branding,
+.t-Header-navBar,
+.t-Header-logo {
+  border-bottom: 0 !important;
+  box-shadow: none !important;
+}
+
+.t-Header {
+  background: rgba(15, 30, 31, 0.88) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(135%);
+  backdrop-filter: blur(16px) saturate(135%);
+}
+
+.t-Header-branding,
+.t-Header-navBar {
+  background: transparent !important;
+}
+
+.t-Header-logo-link,
+.t-Header-logo a {
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+/* 02 | Sidebar: translucent, borderless navigation. */
+.t-Body-nav,
+.t-Body-side {
+  background: linear-gradient(155deg,
+    rgba(16, 34, 34, 0.95),
+    rgba(25, 53, 50, 0.92)) !important;
+  border-right: 0 !important;
+  box-shadow: none !important;
+  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(18px);
+}
+
+.t-TreeNav,
+.t-TreeNav .a-TreeView,
+.t-TreeNav .a-TreeView-list,
+.t-TreeNav .a-TreeView-row,
+.t-TreeNav .a-TreeView-content,
+.t-TreeNav .a-TreeView-node,
+.t-TreeNav .a-TreeView-node > .a-TreeView-content {
+  border: 0 !important;
+  border-bottom: 0 !important;
+  box-shadow: none !important;
+}
+
+.t-TreeNav .a-TreeView-content {
+  margin: 3px 9px !important;
+  border-radius: 12px !important;
+  background: transparent;
+  transition: background-color .2s ease, transform .2s ease !important;
+}
+
+.t-TreeNav .a-TreeView-content:hover,
+.t-TreeNav .a-TreeView-row:hover + .a-TreeView-content {
+  background: rgba(255, 255, 255, .11) !important;
+  transform: translateX(3px);
+}
+
+.t-TreeNav .a-TreeView-content.is-selected,
+.t-TreeNav .a-TreeView-node--selected > .a-TreeView-content,
+.t-TreeNav .a-TreeView-content[aria-current="page"] {
+  background: rgba(201, 132, 110, .22) !important;
+  box-shadow: inset 3px 0 0 var(--ikp-coral) !important;
+  border-radius: 12px !important;
+}
+
+.t-TreeNav .a-TreeView-label,
+.t-TreeNav .a-TreeView-icon,
+.t-TreeNav .a-TreeView-content .fa {
+  color: #f6f6f3 !important;
+}
+
+.t-TreeNav .a-TreeView-content:focus-visible,
+.t-TreeNav a:focus-visible {
+  outline: 2px solid #d4aa9b !important;
+  outline-offset: 2px;
+}
+
+/* 03 | Remove superfluous separator rules near page titles. */
+.t-Body-title,
+.t-BreadcrumbRegion,
+.t-BreadcrumbRegion-body,
+.t-BreadcrumbRegion-title,
+.t-BreadcrumbRegion-breadcrumb,
+.t-Body-title .t-BreadcrumbRegion {
+  border-bottom: 0 !important;
+  box-shadow: none !important;
+}
+
+/* Region headings on property-detail pages should not show a rule. */
+:is(body.page-2, body.page-7) .t-Region-header,
+:is(body.page-2, body.page-7) .t-Region-headerItems,
+:is(body.page-2, body.page-7) .t-Region-header::after,
+.ik-details .t-Region-header,
+.ik-details.t-Region > .t-Region-header {
+  border-bottom: 0 !important;
+  box-shadow: none !important;
+}
+
+:is(body.page-2, body.page-7) .t-Region,
+.ik-details.t-Region,
+.ik-gallery.t-Region {
+  border-radius: var(--ikp-radius) !important;
+  overflow: hidden;
+}
+
+/* These only refine an existing details component; no HTML is replaced. */
+.ik-details,
+.ik-gallery,
+.property-details {
+  border-radius: var(--ikp-radius);
+}
+
+.ik-details :is(h1, h2, h3),
+.property-details :is(h1, h2, h3) {
+  letter-spacing: -.025em;
+  text-wrap: balance;
+}
+
+/* 04 | Dashboard metric cards: easy-to-read counts, still interactive. */
+:is(body.page-8, .ik-dashboard) :is(.a-CardView-item, .t-Cards-item) {
+  border: 0 !important;
+  border-radius: var(--ikp-radius) !important;
+  overflow: hidden;
+  box-shadow: var(--ikp-shadow) !important;
+  transition: transform .23s ease, box-shadow .23s ease;
+}
+
+:is(body.page-8, .ik-dashboard) :is(.a-CardView-item, .t-Cards-item):hover {
+  transform: translateY(-5px);
+  box-shadow: 0 16px 35px rgba(17, 44, 42, .15) !important;
+}
+
+:is(body.page-8, .ik-dashboard) :is(.a-CardView-title, .t-Card-title) {
+  color: var(--ikp-ink) !important;
+  font-weight: 750;
+  letter-spacing: -.02em;
+}
+
+/* Your Cards region uses a TOTAL value in its body/description. */
+:is(body.page-8, .ik-dashboard) :is(.a-CardView-body, .t-Card-desc) {
+  color: var(--ikp-forest) !important;
+  font-size: clamp(1.45rem, 2.4vw, 2.1rem) !important;
+  font-weight: 800 !important;
+  line-height: 1.25;
+  font-variant-numeric: tabular-nums;
+}
+
+/* 05 | Client Leads + Viewing Requests: rows become soft cards. */
+:is(body.page-8, body.page-10, .ik-viewings, .ik-leads) .a-IRR-table {
+  border-collapse: separate !important;
+  border-spacing: 0 9px !important;
+  background: transparent !important;
+  border: 0 !important;
+  width: 100%;
+}
+
+:is(body.page-8, body.page-10, .ik-viewings, .ik-leads) .a-IRR-table thead th {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  color: #42625d !important;
+  font-weight: 750;
+  font-size: .78rem;
+  letter-spacing: .025em;
+  padding: 12px 17px !important;
+}
+
+:is(body.page-8, body.page-10, .ik-viewings, .ik-leads) .a-IRR-table tbody tr {
+  filter: drop-shadow(0 4px 8px rgba(20, 52, 48, .065));
+  transition: filter .2s ease;
+}
+
+:is(body.page-8, body.page-10, .ik-viewings, .ik-leads) .a-IRR-table tbody tr:hover {
+  filter: drop-shadow(0 8px 12px rgba(20, 52, 48, .12));
+}
+
+:is(body.page-8, body.page-10, .ik-viewings, .ik-leads) .a-IRR-table tbody td {
+  background: rgba(255, 255, 255, .97) !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  color: #32423d;
+  padding: 14px 17px !important;
+  vertical-align: middle;
+  transition: background-color .2s ease;
+}
+
+:is(body.page-8, body.page-10, .ik-viewings, .ik-leads) .a-IRR-table tbody tr:hover td {
+  background: #e8f1ed !important;
+}
+
+:is(body.page-8, body.page-10, .ik-viewings, .ik-leads) .a-IRR-table tbody td:first-child {
+  border-radius: 14px 0 0 14px !important;
+}
+
+:is(body.page-8, body.page-10, .ik-viewings, .ik-leads) .a-IRR-table tbody td:last-child {
+  border-radius: 0 14px 14px 0 !important;
+}
+
+/* Name column in your viewing report / client leads. */
+:is(body.page-8, body.page-10, .ik-viewings, .ik-leads) .a-IRR-table tbody td[headers="CLIENT_NAME"],
+:is(body.page-8, body.page-10, .ik-viewings, .ik-leads) .a-IRR-table tbody td[headers="Client Name"] {
+  color: #20504c !important;
+  font-weight: 750;
+}
+
+/* Search/actions area: a compact toolbar without a bottom rule. */
+:is(body.page-8, body.page-10, .ik-viewings, .ik-leads) :is(.a-IRR-toolbar, .a-IRR-controlsContainer) {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+:is(body.page-8, body.page-10, .ik-viewings, .ik-leads) :is(.a-IRR-search-field, .a-IRR-button) {
+  border-radius: 11px !important;
+}
+
+/* 06 | Manage Viewing: comfortable, rounded information blocks. */
+:is(body.page-9, .ik-manage) .t-Region,
+:is(body.page-9, .ik-manage) .t-Region-bodyWrap {
+  border-radius: var(--ikp-radius);
+}
+
+:is(body.page-9, .ik-manage) .t-Form-fieldContainer {
+  background: rgba(255, 255, 255, .88) !important;
+  border: 1px solid rgba(38, 92, 82, .11) !important;
+  border-radius: 15px !important;
+  margin-bottom: 12px !important;
+  padding: 10px 15px !important;
+  box-shadow: 0 3px 13px rgba(24, 49, 44, .045) !important;
+  transition: box-shadow .2s ease, border-color .2s ease;
+}
+
+:is(body.page-9, .ik-manage) .t-Form-fieldContainer:hover {
+  border-color: rgba(33, 108, 98, .25) !important;
+  box-shadow: 0 8px 20px rgba(24, 49, 44, .085) !important;
+}
+
+:is(body.page-9, .ik-manage) .t-Form-label {
+  font-size: .78rem !important;
+  font-weight: 750 !important;
+  color: #59706a !important;
+}
+
+:is(body.page-9, .ik-manage) .apex-item-display-only {
+  color: #1c3e3b !important;
+  font-size: 1.02rem !important;
+  font-weight: 650 !important;
+  line-height: 1.5 !important;
+  overflow-wrap: anywhere;
+}
+
+:is(body.page-9, .ik-manage) :is(select, textarea, input:not([type="hidden"])) {
+  max-width: 100%;
+  border-radius: 11px !important;
+}
+
+:is(body.page-9, .ik-manage) :is(textarea, select):focus-visible {
+  outline: 2px solid #519c92;
+  outline-offset: 2px;
+}
+
+/* 07 | Buttons and report interactions remain identifiable. */
+:is(body.page-8, body.page-9, body.page-10) .t-Button {
+  border-radius: 12px !important;
+  transition: transform .18s ease, box-shadow .18s ease;
+}
+
+:is(body.page-8, body.page-9, body.page-10) .t-Button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 7px 17px rgba(20, 58, 52, .12);
+}
+
+/* 08 | Mobile: comfortable spacing and maintain the report scroll. */
+@media (max-width: 740px) {
+  :is(body.page-8, body.page-10, .ik-viewings, .ik-leads) .a-IRR-table {
+    border-spacing: 0 7px !important;
+    min-width: 650px;
+  }
+
+  :is(body.page-8, body.page-10, .ik-viewings, .ik-leads) .a-IRR-table tbody td {
+    padding: 12px 13px !important;
+  }
+
+  :is(body.page-9, .ik-manage) .t-Form-fieldContainer {
+    padding: 10px 12px !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .t-TreeNav .a-TreeView-content,
+  :is(body.page-8, .ik-dashboard) :is(.a-CardView-item, .t-Cards-item),
+  :is(body.page-8, body.page-10, .ik-viewings, .ik-leads) .a-IRR-table tbody tr,
+  :is(body.page-8, body.page-9, body.page-10) .t-Button {
+    transition: none !important;
+    transform: none !important;
+  }
+}
+
+
+
+/* ===========================================================================
+   18 | V6 — FULL APPLICATION FINISHING SYSTEM
+   Completes the inherited v5 styles for the navigation, Page 1-11,
+   admin pages and staff portal. No database or chatbot behavior is changed.
+   =========================================================================== */
+
+:root {
+  --ik-v6-night: #112f32;
+  --ik-v6-ink: #173c41;
+  --ik-v6-sea: #285f62;
+  --ik-v6-pine: #30766f;
+  --ik-v6-glass: rgba(14,34,35,.87);
+  --ik-v6-cream: #fff9f1;
+  --ik-v6-fog: #f1f5f0;
+  --ik-v6-blush: #d69a85;
+  --ik-v6-ring: rgba(46,116,113,.23);
+  --ik-v6-muted: #5b7371;
+  --ik-v6-shadow: 0 15px 38px rgba(18,62,59,.11);
+  --ik-v6-shadow-hover: 0 25px 52px rgba(15,58,58,.18);
+  --ik-v6-radius: 20px;
+}
+
+/* A smooth background across public and staff surfaces, without page lines. */
+body.t-PageBody,
+.t-Body-content {
+  background-color: #f2eee8;
+}
+.t-Body-contentInner { min-width: 0; }
+.t-Body-main,
+.t-Body-contentInner,
+.t-Body-content,
+.t-Region-bodyWrap { min-width: 0; }
+.t-Body-title,
+.t-Body-title .t-Body-titleText,
+.t-BreadcrumbRegion,
+.t-BreadcrumbRegion-body,
+.t-BreadcrumbRegion-breadcrumb,
+.t-Region-headerItems { box-shadow: none; }
+.t-BreadcrumbRegion,
+.t-Body-title,
+.t-BreadcrumbRegion-body,
+.t-Body-title .t-Region-header {
+  border: 0 !important;
+}
+.t-Body-title { padding-top: .4rem; }
+.t-Body-title .t-Body-titleText {
+  font-family: var(--ik-serif, Georgia, serif);
+  font-weight: 760;
+  letter-spacing: -.045em;
+  line-height: 1.12;
+}
+
+/* NAVIGATION: translucent near-black teal, no row separator lines. */
+.t-Header,
+.t-Header-branding,
+.t-Header-navBar,
+.t-Header-logo {
+  background: var(--ik-v6-glass) !important;
+  border: 0 !important;
+  border-bottom: 0 !important;
+  box-shadow: none !important;
+  -webkit-backdrop-filter: blur(19px) saturate(135%);
+  backdrop-filter: blur(19px) saturate(135%);
+}
+.t-Header { isolation: isolate; }
+.t-Header-branding, .t-Header-navBar, .t-Header-logo {
+  background: transparent !important;
+}
+.t-Header-logo-link, .t-Header-logo a,
+.t-Header .t-Header-controls,
+.t-Header .t-Header-navBar {
+  border: 0 !important;
+  box-shadow: none !important;
+}
+.t-Header-logo-link img, .t-Header-logo img {
+  max-height: 41px;
+  width: auto;
+  object-fit: contain;
+  transition: filter .24s ease, transform .24s ease;
+}
+.t-Header-logo-link:hover img, .t-Header-logo a:hover img {
+  filter: drop-shadow(0 4px 10px rgba(217,245,228,.25));
+  transform: translateY(-1px);
+}
+.t-Body-nav, .t-Body-side {
+  background: linear-gradient(155deg,rgba(12,34,36,.95),rgba(27,64,62,.91)) !important;
+  box-shadow: none !important;
+  border: 0 !important;
+  -webkit-backdrop-filter: blur(18px) saturate(120%);
+  backdrop-filter: blur(18px) saturate(120%);
+}
+.t-Body-nav .t-TreeNav,
+.t-Body-nav .a-TreeView,
+.t-Body-nav .a-TreeView-list,
+.t-Body-nav .a-TreeView-node,
+.t-Body-nav .a-TreeView-row,
+.t-Body-nav .a-TreeView-content,
+.t-Body-nav .a-TreeView-content::before,
+.t-Body-nav .a-TreeView-content::after,
+.t-TreeNav .a-TreeView-row,
+.t-TreeNav .a-TreeView-content {
+  border: 0 !important;
+  border-bottom: 0 !important;
+  box-shadow: none !important;
+}
+.t-Body-nav .a-TreeView-content,
+.t-TreeNav .a-TreeView-content {
+  margin: 4px 10px !important;
+  border-radius: 14px !important;
+}
+.t-Body-nav .a-TreeView-content:hover,
+.t-Body-nav .a-TreeView-content:focus-within {
+  background: rgba(228,249,239,.13) !important;
+}
+.t-Body-nav .a-TreeView-content[aria-current="page"],
+.t-Body-nav .a-TreeView-node--selected > .a-TreeView-content,
+.t-Body-nav .a-TreeView-content.is-selected {
+  background: rgba(137,208,195,.19) !important;
+  box-shadow: inset 3px 0 #ddae95 !important;
+}
+.t-Body-nav .a-TreeView-label { font-weight: 610; letter-spacing: .005em; }
+.t-Body-nav .a-TreeView-content a,
+.t-Body-nav .a-TreeView-content .a-TreeView-label,
+.t-Body-nav .a-TreeView-content .fa { color: #f4f7f2 !important; }
+.t-Body-nav :is(a,button):focus-visible {
+  outline: 2px solid #f1cda8 !important;
+  outline-offset: 2px;
+}
+
+/* Soft region chrome; no horizontal dividing rule through section headings. */
+:is(.ik-search,.ik-details,.ik-gallery,.ik-dashboard,.ik-viewings,.ik-leads,.ik-manage,.ik-faq,.ik-upload) > .t-Region-header,
+:is(.ik-search,.ik-details,.ik-gallery,.ik-dashboard,.ik-viewings,.ik-leads,.ik-manage,.ik-faq,.ik-upload) .t-Region-headerItems {
+  border: 0 !important;
+  border-bottom: 0 !important;
+  box-shadow: none !important;
+}
+:is(.ik-search,.ik-details,.ik-gallery,.ik-dashboard,.ik-viewings,.ik-leads,.ik-manage,.ik-faq,.ik-upload) > .t-Region-header::after {
+  content: none !important;
+}
+:is(.ik-search,.ik-details,.ik-gallery,.ik-dashboard,.ik-viewings,.ik-leads,.ik-manage,.ik-faq,.ik-upload) .t-Region-bodyWrap {
+  border-top: 0 !important;
+  box-shadow: none !important;
+}
+:is(.ik-details,.ik-gallery,.ik-manage,.ik-faq).t-Region { overflow: clip; }
+
+/* PAGE 5: memorable but readable welcome — all text remains visible. */
+.t-Body-content .ik-welcome.t-Region {
+  background:
+    radial-gradient(circle at 95% 8%, rgba(252,214,156,.14), transparent 31%),
+    radial-gradient(circle at 9% 86%, rgba(129,204,193,.16), transparent 39%),
+    linear-gradient(120deg,#10363c 0%,#20565a 60%,#317371 100%) !important;
+  border: 1px solid rgba(211,239,227,.24) !important;
+  border-radius: 26px !important;
+  position: relative;
+}
+.ik-welcome .ik-welcome-copy { padding-inline: min(3vw,22px); }
+.ik-welcome .ik-welcome-headline,
+.ik-welcome .ik-welcome-headline * { color: #fffaf0 !important; }
+.ik-welcome .ik-welcome-headline em { color: #f2c79b !important; }
+.ik-welcome .ik-welcome-intro,
+.ik-welcome .ik-welcome-note { opacity: 1 !important; text-shadow: none !important; }
+.ik-welcome .ik-welcome-steps { color: #ffe9cb !important; }
+.ik-welcome .t-Region-buttons--bottom {
+  padding: 12px clamp(18px,4vw,55px) 37px !important;
+  align-items: center;
+}
+.ik-welcome .t-Button.ik-action-buy,
+.ik-welcome .t-Button.ik-action-rent {
+  border-radius: 14px !important;
+  font-weight: 780 !important;
+  letter-spacing: .01em;
+  box-shadow: 0 11px 26px rgba(4,34,36,.17) !important;
+}
+.ik-welcome .t-Button.ik-action-rent,
+.ik-welcome .t-Button.ik-action-rent :is(.t-Button-label,span,b,strong,i) {
+  color: #12353b !important;
+  -webkit-text-fill-color: #12353b !important;
+  opacity: 1 !important;
+}
+.ik-welcome .t-Button.ik-action-rent {
+  background: #fffaf1 !important;
+  border: 2px solid #fffaf1 !important;
+}
+.ik-welcome .t-Button.ik-action-rent:hover {
+  background: #ffe8c9 !important;
+  border-color: #ffe8c9 !important;
+}
+.ik-welcome .t-Button.ik-action-buy,
+.ik-welcome .t-Button.ik-action-buy :is(.t-Button-label,span,b,strong,i) {
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+}
+
+/* PAGES 1 + 6: filter header and fields as one uninterrupted surface. */
+.ik-search.t-Region {
+  background: rgba(255,253,248,.97) !important;
+  border: 1px solid rgba(34,99,92,.09) !important;
+  border-radius: 20px !important;
+  box-shadow: 0 13px 34px rgba(24,62,60,.07) !important;
+}
+.ik-search > .t-Region-header,
+.ik-search .t-Region-header { background: transparent !important; border: 0 !important; }
+.ik-search .t-Region-headerItems,
+.ik-search .t-Region-bodyWrap,
+.ik-search .t-Region-body { border: 0 !important; box-shadow: none !important; }
+.ik-search .t-Form-fieldContainer { min-width: 0; }
+.ik-search .t-Form-inputContainer :is(input,select) { min-height: 49px; }
+.ik-search :is(.t-Button,.a-Button) { min-height: 45px; border-radius: 12px !important; }
+.ik-search .t-Region-title { letter-spacing: -.04em; }
+
+/* PAGES 1 + 6: lift and photographic zoom without distorting images. */
+.ik-listings.t-Region {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+.ik-listings .t-Region-body { padding-inline: 0; }
+.ik-listings :is(.a-CardView-item,.t-Cards-item) {
+  overflow: hidden;
+  border-radius: 20px !important;
+  box-shadow: 0 9px 28px rgba(12,56,54,.10) !important;
+  border: 1px solid rgba(50,97,91,.10) !important;
+  background: #fffefa;
+}
+.ik-listings :is(.a-CardView-item,.t-Cards-item):hover,
+.ik-listings :is(.a-CardView-item,.t-Cards-item):focus-within {
+  box-shadow: 0 26px 54px rgba(14,61,59,.22) !important;
+  transform: translateY(-11px) scale(1.012);
+}
+.ik-listings :is(.a-CardView-media,.t-Card-icon) { overflow: hidden; }
+.ik-listings .a-CardView-media :is(img,.a-CardView-mediaImg) { transition: transform .48s cubic-bezier(.18,.74,.25,1); }
+.ik-listings :is(.a-CardView-item,.t-Cards-item):hover .a-CardView-media :is(img,.a-CardView-mediaImg) {
+  transform: scale(1.09);
+}
+.ik-listings :is(.a-CardView-title,.t-Card-title) { color: #163d43; }
+.ik-listings :is(.a-CardView-subTitle,.a-CardView-body,.t-Card-desc) { color: #526965; }
+.ik-listings :is(.a-CardView-button,.t-Card-btn) { min-height: 40px; border-radius: 11px !important; }
+
+/* PAGES 2 + 7: story-first property detail pages. */
+.ik-details.t-Region { border-radius: 22px !important; }
+.ik-details > .t-Region-header {
+  background: transparent !important;
+  border-bottom: 0 !important;
+}
+.ik-details .ik-story-intro { border-radius: 22px; }
+.ik-details .ik-story-section,
+.ik-details .ik-story-fact {
+  border-radius: 18px;
+  border: 1px solid rgba(35,94,90,.12);
+}
+.ik-details .ik-story-section h3 { line-height: 1.18; }
+.ik-details .ik-story-description { overflow-wrap: break-word; }
+.ik-gallery.t-Region { background: #fffcf7 !important; border-radius: 20px !important; }
+.ik-gallery .t-Region-header { border: 0 !important; }
+.ik-gallery .a-CardView-item { border-radius: 15px !important; overflow: hidden; }
+.ik-gallery .a-CardView-media img { transition: transform .35s ease; }
+.ik-gallery .a-CardView-item:hover .a-CardView-media img { transform: scale(1.04); }
+.ik-book-button.t-Button { border-radius: 13px !important; min-height: 49px; }
+
+/* PAGE 8: metric cards in their actual SQL-backed Cards region. */
+.ik-dashboard.t-Region { background: transparent !important; border: 0 !important; box-shadow: none !important; }
+.ik-dashboard .a-CardView,
+.ik-dashboard .t-Cards { background: transparent !important; }
+.ik-dashboard :is(.a-CardView-item,.t-Cards-item) {
+  border: 1px solid rgba(29,91,88,.13) !important;
+  border-radius: 19px !important;
+  background: linear-gradient(148deg,#fffdf9 14%,#ebf5ef 100%) !important;
+  box-shadow: var(--ik-v6-shadow) !important;
+  overflow: hidden;
+}
+.ik-dashboard :is(.a-CardView-item,.t-Cards-item):hover {
+  box-shadow: var(--ik-v6-shadow-hover) !important;
+  transform: translateY(-7px);
+}
+.ik-dashboard .a-CardView-title,
+.ik-dashboard .t-Card-title { color: #315b5b !important; }
+.ik-dashboard .a-CardView-body,
+.ik-dashboard .t-Card-desc {
+  color: #164348 !important;
+  font-size: clamp(2.1rem,3.7vw,3rem) !important;
+  line-height: 1.14 !important;
+  font-weight: 850 !important;
+  font-variant-numeric: tabular-nums;
+}
+
+/* PAGES 8 + 10: floating report rows instead of horizontal ruled tables. */
+:is(.ik-viewings,.ik-leads) :is(.a-IRR-content,.a-IRR-tableContainer,.t-Report) {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+:is(.ik-viewings,.ik-leads) .a-IRR-table {
+  border-spacing: 0 10px !important;
+  border-collapse: separate !important;
+  background: transparent !important;
+  width: 100%;
+}
+:is(.ik-viewings,.ik-leads) .a-IRR-table thead th {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  color: #4a6964 !important;
+  font-size: .76rem;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+}
+:is(.ik-viewings,.ik-leads) .a-IRR-table tbody td {
+  background: #fffefa !important;
+  color: #284946 !important;
+  padding: 15px 17px !important;
+  border-top: 1px solid rgba(45,105,99,.07) !important;
+  border-bottom: 1px solid rgba(45,105,99,.07) !important;
+  border-left: 0 !important;
+  border-right: 0 !important;
+  box-shadow: none !important;
+}
+:is(.ik-viewings,.ik-leads) .a-IRR-table tbody tr:nth-child(even) td {
+  background: #fffefa !important;
+}
+:is(.ik-viewings,.ik-leads) .a-IRR-table tbody tr:hover td {
+  background: #eaf3ef !important;
+}
+:is(.ik-viewings,.ik-leads) .a-IRR-table tbody td:first-child {
+  border-left: 1px solid rgba(45,105,99,.08) !important;
+  border-radius: 14px 0 0 14px !important;
+}
+:is(.ik-viewings,.ik-leads) .a-IRR-table tbody td:last-child {
+  border-right: 1px solid rgba(45,105,99,.08) !important;
+  border-radius: 0 14px 14px 0 !important;
+}
+:is(.ik-viewings,.ik-leads) :is(.a-IRR-toolbar,.a-IRR-controlsContainer,.a-IRR-paginationWrap) {
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+:is(.ik-viewings,.ik-leads) :is(.a-IRR-button,.a-IRR-search-field,input[type="search"]) {
+  border-radius: 12px !important;
+}
+:is(.ik-viewings,.ik-leads) .ik-client-name {
+  border-radius: 9px;
+  font-weight: 780;
+}
+:is(.ik-viewings,.ik-leads) .ik-client-name:is(:hover,:focus-visible) {
+  transform: translateY(-3px) scale(1.065);
+  box-shadow: 0 9px 23px rgba(25,84,80,.14);
+}
+
+/* PAGE 9: comfortable, readable full-width booking details and edit controls. */
+.ik-manage.t-Region { border-radius: 22px !important; }
+.ik-manage .t-Region-header {
+  background: linear-gradient(100deg,#e4f1e9,#fff6e8) !important;
+  border: 0 !important;
+}
+.ik-manage .t-Region-body { padding: clamp(20px,3vw,38px) !important; }
+.ik-manage .t-Form-fieldContainer {
+  background: linear-gradient(125deg,#fffdf9,#f2f8f2) !important;
+  border: 1px solid rgba(33,101,94,.13) !important;
+  border-radius: 16px !important;
+  padding: 15px 18px !important;
+  margin-bottom: 13px !important;
+  min-width: 0;
+  box-shadow: 0 5px 15px rgba(25,65,61,.045) !important;
+}
+.ik-manage .t-Form-fieldContainer:hover,
+.ik-manage .t-Form-fieldContainer:focus-within {
+  border-color: rgba(43,125,112,.32) !important;
+  box-shadow: 0 10px 25px rgba(27,86,76,.10) !important;
+}
+.ik-manage .t-Form-labelContainer,
+.ik-manage .t-Form-inputContainer,
+.ik-manage .t-Form-itemWrapper { min-width: 0 !important; }
+.ik-manage .t-Form-label {
+  font-size: .76rem !important;
+  letter-spacing: .065em;
+  text-transform: uppercase;
+  font-weight: 760 !important;
+}
+.ik-manage :is(.apex-item-display-only,.display_only) {
+  color: #153d42 !important;
+  font-size: 1.03rem !important;
+  font-weight: 670 !important;
+  white-space: normal !important;
+  overflow-wrap: anywhere !important;
+}
+.ik-manage :is(#P9_BOOKING_STATUS_CONTAINER,#P9_FOLLOW_UP_STATUS_CONTAINER,#P9_FOLLOW_UP_NOTES_CONTAINER,#P9_FOLLOW_UP_SUMMARY_CONTAINER) {
+  background: #fff7ea !important;
+  border-color: #edd7bb !important;
+}
+.ik-manage :is(select.apex-item-select,textarea.apex-item-textarea,input.apex-item-text) {
+  border-radius: 11px !important;
+  background-color: #fffefa !important;
+  min-width: 0;
+}
+.ik-manage textarea.apex-item-textarea { min-height: 145px; line-height: 1.65; }
+.ik-manage .t-Region-buttons--bottom { border: 0 !important; background: transparent !important; }
+
+/* PAGE 11: polished informational FAQ; native details keep working. */
+.ik-faq.t-Region { background: #fdfbf6 !important; border-radius: 21px !important; }
+.ik-faq > .t-Region-header { border: 0 !important; background: transparent !important; }
+.ik-faq .ikhaya-faq { max-width: 1200px; }
+.ik-faq .ikhaya-faq .faq-hero {
+  background: linear-gradient(121deg,#123b42,#2d6967) !important;
+  border: 0 !important;
+  border-radius: 23px !important;
+}
+.ik-faq .ikhaya-faq .faq-nav { border: 1px solid rgba(32,94,89,.11); }
+.ik-faq .ikhaya-faq .faq-nav a {
+  border-color: transparent;
+  background: #fffefa;
+  border-radius: 99px;
+  color: #1e5658;
+}
+.ik-faq .ikhaya-faq .faq-nav a:hover,
+.ik-faq .ikhaya-faq .faq-nav a:focus-visible {
+  background: #1f5c61;
+  color: #fff !important;
+}
+.ik-faq .ikhaya-faq .faq-section-title { border: 0 !important; }
+.ik-faq .ikhaya-faq details {
+  border-radius: 15px !important;
+  border: 1px solid #dce9e2;
+}
+.ik-faq .ikhaya-faq details[open] {
+  background: #fcfefb;
+  border-left: 4px solid #c88c70;
+}
+.ik-faq .ikhaya-faq details:hover { transform: translateY(-4px); }
+.ik-faq .ikhaya-faq summary { line-height: 1.5; }
+.ik-faq .ikhaya-faq .faq-answer { line-height: 1.76; }
+.ik-faq .ikhaya-faq :is(.faq-contact-card,.faq-highlight,.faq-note) {
+  border-radius: 15px;
+}
+.ik-faq .ikhaya-faq .faq-button { border-radius: 11px; }
+
+/* PAGES 3 + 4: drag-and-drop area and upload controls. */
+.ik-upload.t-Region { border-radius: 19px !important; }
+.ik-upload :is(.apex-item-file,input[type="file"],.a-FileDrop) {
+  border-radius: 14px !important;
+  min-height: 52px;
+}
+.ik-upload .t-Button { min-height: 43px; }
+
+/* STAFF LOGIN, administrative forms and APEX wizard. */
+.t-Login-container .t-Login-region,
+.ik-login.t-Region {
+  border-radius: 21px !important;
+  background: linear-gradient(135deg,#fffdf8,#e8f2eb) !important;
+}
+.t-Login-container :is(input,select),
+.ik-login :is(input,select) { border-radius: 11px !important; }
+.ik-admin :is(.t-Region,.t-DialogRegion) { border-radius: 16px; }
+.ik-admin :is(.t-WizardSteps,.t-WizardSteps-list) { border-radius: 12px; }
+.ik-admin :is(.a-IRR-table,.t-Report-report) th { background: #e9f2ec; }
+
+/* Reliable interactions that do not alter native click handlers. */
+.t-Button:not(:disabled):active { transform: translateY(0); }
+:is(.ik-details,.ik-listings,.ik-dashboard,.ik-leads,.ik-viewings,.ik-search,.ik-manage,.ik-faq) :is(a,button,input,select,textarea,summary):focus-visible {
+  outline: 2px solid #d69a85 !important;
+  outline-offset: 3px;
+}
+:where(.ik-details,.ik-listings,.ik-viewings,.ik-leads,.ik-manage,.ik-faq) :is(p,td,summary,.t-Form-itemWrapper) {
+  overflow-wrap: anywhere;
+}
+
+/* Responsive: preserve the navigation, cards and report readability. */
+@media (max-width: 1050px) {
+  .ik-dashboard :is(.a-CardView-body,.t-Card-desc) { font-size: clamp(1.9rem,3.2vw,2.7rem) !important; }
+  .ik-welcome .ik-welcome-headline { font-size: clamp(2.4rem,5.2vw,4rem) !important; }
+  .ik-manage .t-Region-body { padding: 22px !important; }
+}
+@media (max-width: 740px) {
+  .t-Header-logo-link img, .t-Header-logo img { max-height: 36px; }
+  .t-Body-contentInner { padding-inline: 9px; }
+  .ik-welcome .t-Region-buttons--bottom { padding: 10px 18px 28px !important; }
+  .ik-search .t-Region-body { padding: 16px !important; }
+  .ik-listings :is(.a-CardView-item,.t-Cards-item):hover,
+  .ik-listings :is(.a-CardView-item,.t-Cards-item):focus-within { transform: translateY(-6px) scale(1.003); }
+  .ik-details .ik-story-title { font-size: clamp(1.95rem,6vw,2.8rem); }
+  :is(.ik-viewings,.ik-leads) :is(.a-IRR-table,.t-Report-report) { min-width: 640px; }
+  :is(.ik-viewings,.ik-leads) .a-IRR-table tbody td { padding: 12px 13px !important; }
+  .ik-manage .t-Form-fieldContainer { padding: 13px 14px !important; }
+  .ik-faq .ikhaya-faq .faq-nav { position: static; }
+}
+@media (max-width: 480px) {
+  .ik-welcome .ik-welcome-headline { font-size: 2.35rem !important; }
+  .ik-welcome .ik-welcome-kicker { font-size: .7rem; letter-spacing: .12em; }
+  .ik-welcome .ik-welcome-intro { line-height: 1.63 !important; }
+  .ik-welcome .t-Region-buttons--bottom :is(.t-Region-buttons-left,.t-Region-buttons-right) { width: 100%; }
+  .ik-welcome :is(.ik-action-buy,.ik-action-rent).t-Button { width: 100% !important; min-width: 0; }
+  .ik-details .ik-story-grid { grid-template-columns: 1fr; }
+  .ik-details .ik-story-fact--wide { grid-column: auto; }
+  .ik-manage .t-Form-fieldContainer { margin-bottom: 12px !important; }
+  .ik-faq .ikhaya-faq .faq-contact { padding: 18px; }
+}
+@media (hover: none) {
+  .ik-listings :is(.a-CardView-item,.t-Cards-item):hover,
+  .ik-dashboard :is(.a-CardView-item,.t-Cards-item):hover,
+  .ik-faq .ikhaya-faq details:hover { transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; }
+  .ik-listings :is(.a-CardView-item,.t-Cards-item,.a-CardView-media img),
+  .ik-dashboard :is(.a-CardView-item,.t-Cards-item),
+  .ik-faq .ikhaya-faq details,
+  .ik-welcome :is(.ik-action-buy,.ik-action-rent).t-Button,
+  .t-Body-nav .a-TreeView-content {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+  }
+}
+
+/* END OF iKhayaLam MASTER V6 — all site styles in this single file. */
