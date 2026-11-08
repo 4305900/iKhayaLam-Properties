@@ -294,3 +294,136 @@ The result is **always** saved to `listing_type`, even when it is empty.
 - **Require a currency marker:** only count numbers preceded by `R`, or followed by `k`, `m` or `million`.
 
 
+# Sale Search Extractor
+
+A JavaScript snippet for a chatbot flow script step that uses an `attributeApi` object (for example Infobip Answers). When a user describes a property they want to **buy**, such as "4 bedroom house in Durbanville around R2.5m", an earlier step (typically named entity recognition, or NER) may have filled in attributes like `Location` and `Price`. This script gathers those values, cleans them, fills gaps from the raw message where it can, and saves tidy search criteria for the property search.
+
+It has the same structure as the rental search extractor, but it saves a sale `price` instead of `max_rent` and keeps only prices that look like sale prices.
+
+## What it does
+
+1. Reads each search criterion from the entity attributes, trying alternative attribute names.
+2. If no location was found, looks for a known area name in the user's message.
+3. Cleans the bedroom and bathroom values down to digits.
+4. Reads the price, understanding formats such as `R1.5m`, `1 500 000` and `950k`.
+5. If no usable price was found, looks for one in the message text.
+6. Saves everything to the attributes used by the search.
+
+## Attributes
+
+### Inputs
+
+For each row, the first non-empty attribute in the list is used.
+
+| Criterion      | Attributes tried, in order              |
+|----------------|-----------------------------------------|
+| Location       | `Location`, `location`                  |
+| Property type  | `Property_Type`, `property_type`        |
+| Bedrooms       | `Bedrooms`, `bedrooms`                  |
+| Bathrooms      | `Bathrooms`, `bathrooms`                |
+| Price          | `Price`, `price`                        |
+| User's message | `lastReceivedTextMessage`, `user_message`, `message` (used only for the fallbacks) |
+
+### Outputs
+
+| Attribute       | Content                                                                    |
+|-----------------|----------------------------------------------------------------------------|
+| `location`      | Area name (empty if none found).                                           |
+| `property_type` | Property type exactly as received (empty if none).                         |
+| `bedrooms`      | Digits only (empty if none).                                               |
+| `bathrooms`     | Digits only (empty if none).                                               |
+| `price`         | Whole number of rand as a string, only if it is R100 000 or more, otherwise empty. |
+
+All five are always set, using an empty string when nothing was found. There is no validity flag, so the flow should check each attribute for an empty value to decide what to ask next.
+
+## How it works
+
+### Helper functions
+
+| Function            | Purpose                                                                                      |
+|---------------------|----------------------------------------------------------------------------------------------|
+| `read(name)`        | Safely reads an attribute, returning a trimmed string, or `""` if it is missing or an error occurs. |
+| `firstOf(names)`    | Returns the first non-empty value from a list of attribute names.                            |
+| `digits(text)`      | Removes everything except the digits 0-9.                                                    |
+| `parsePrices(text)` | Finds every number in some text and returns them as a list of numbers (see below).           |
+
+### Price parsing
+
+`parsePrices` lowercases the text and removes thousand separators (a space or comma between a digit and exactly three more digits). It then finds each number, with an optional decimal part and an optional suffix:
+
+| Text             | Result    |
+|------------------|-----------|
+| `R1.5m`, `1.5 million` | 1500000 |
+| `1 500 000`, `1,500,000` | 1500000 |
+| `950k`           | 950000    |
+| `$2000000`       | 2000000   |
+
+Only the suffixes `k`, `m` and `million` are understood.
+
+### Location
+
+If `Location` or `location` is empty, the message is lowercased and checked against a hard-coded list of 20 areas:
+
+> Bellville, Sea Point, Durbanville, Brackenfell, Century City, Cape Town, Parow, Goodwood, Table View, Stellenbosch, Somerset West, Milnerton, Blouberg, Hout Bay, Kommetjie, Cape Town CBD, Waterfront, Paarl, Constantia, Noordhoek
+
+The **first area in the list** that appears anywhere in the message is used, saved with its list spelling. The result (possibly empty) is saved to `location`.
+
+### Property type, bedrooms, bathrooms
+
+- `property_type` is saved as received.
+- `bedrooms` and `bathrooms` are passed through `digits()`, so `4 bedrooms` becomes `4`.
+
+### Price
+
+1. `SALE_MIN` is R100 000. Anything below it is not treated as a sale price.
+2. The price is the **largest** number found in `Price` (or `price`), or 0 if there is none.
+3. If that is below `SALE_MIN`, the **largest number in the message** is used instead.
+4. If the final number is at least `SALE_MIN`, it is rounded and saved to `price` as text. Otherwise `price` is set to an empty string.
+
+When a range is captured, such as `R1m - R2m`, the larger number (the upper budget) is used.
+
+## Examples
+
+| Situation | Result |
+|-----------|--------|
+| NER gives `Location` = `Durbanville`, `Property_Type` = `house`, `Bedrooms` = `4`, `Bathrooms` = `2`, `Price` = `R2.5m` | `location` `Durbanville`, `property_type` `house`, `bedrooms` `4`, `bathrooms` `2`, `price` `2500000` |
+| No NER values; message `Looking to buy in Parow, budget 1 500 000` | `location` `Parow`, `price` `1500000`, the rest empty |
+| No NER values; message `house for 950k in Paarl` | `location` `Paarl`, `price` `950000` |
+| `Price` = `R1m - R2m` | `price` = `2000000` |
+| `Price` = `R15 000` and no larger number in the message | `price` empty (below `SALE_MIN`) |
+| No NER values; message `2 mil budget` | `price` empty (`mil` is not understood) |
+| No NER values; message `call me on 0821234567` | `price` = `821234567` (see limitations) |
+| No NER values; message `hello` | All five attributes empty |
+
+## Known limitations
+
+- **Prices under R100 000 are discarded.** The script is aimed at sales, so a rental-sized amount or a small budget gives an empty `price`. Because `price` is also one of the names it reads, a lowercase `price` attribute holding a smaller value is overwritten with an empty string.
+- **The message fallback trusts the largest number.** Any number of 100 000 or more can be taken as the price, including phone numbers and long reference numbers.
+- **Only `k`, `m` and `million` are understood.** `2 mil`, `2 mill` and `15 thousand` are read as 2 and 15, so they end up discarded.
+- **A standalone `m` means million.** `5 m from the beach` is read as 5 000 000.
+- **Separator joining can merge unrelated numbers.** A space or comma followed by exactly three digits is removed, so `3 100` in other text becomes 3100.
+- **Digit stripping merges numbers in bedrooms and bathrooms.** `2-3 bedrooms` gives `23`, and number words such as `two` or `studio` give an empty value.
+- **`Cape Town CBD` is never returned.** `Cape Town` comes earlier in the list and is contained in it, so the CBD entry is never reached.
+- **Area matching depends on list order and substrings.** If a message names several areas, the one earliest in the list wins. There are no word boundaries, and spelling variants such as `Seapoint` are not recognised.
+- **Only 20 areas are known.** Other suburbs are missed unless NER supplies `Location`. A NER location is saved exactly as received.
+- **No validation or flag.** Nothing checks bedroom counts, property types or sensible price ranges.
+- **Existing values are overwritten.** All five attributes are set on every run, though reading its own lowercase output names means earlier values survive when the new input has nothing.
+- **Duplicate name.** The `Price` list repeats `"price"` twice. This is harmless, and the repeat can be removed or replaced with another attribute name.
+
+## Differences from the rental search extractor
+
+| Area                 | Rental extractor                          | Sale extractor                               |
+|----------------------|-------------------------------------------|----------------------------------------------|
+| Price output         | `max_rent`                                | `price`                                      |
+| Minimum accepted     | Any value (message fallback needs 100 or more) | R100 000 or more only                   |
+| Price parsing        | Digits only, `k` handled in the fallback only | Shared parser: `k`, `m`, `million`, separators, decimals |
+| Message fallback runs when | `max_rent` is empty                 | The price from `Price` is below R100 000     |
+
+## Customising
+
+- **Change the sale threshold:** edit `SALE_MIN`.
+- **Add `mil` and `thousand`:** extend the suffix list in the regex and add matching multipliers.
+- **Ignore phone numbers and IDs:** skip numbers with more than 10 digits or a leading zero before taking the largest.
+- **Add areas:** add names to the `locations` list, and put `Cape Town CBD` before `Cape Town` (or choose the longest match).
+- **Match whole words:** use a word-boundary test instead of `includes`.
+- **Add a validity flag:** set an attribute such as `criteria_complete` when all the values you need are present.
