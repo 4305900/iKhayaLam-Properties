@@ -504,3 +504,81 @@ A condition after this step can branch on the flags:
 - **Add more flags:** copy the `has_location` line for other attributes, for example `has_budget` for `price`.
 - **Require a minimum:** replace `some` with a count of non-empty values to require, for example, at least two criteria.
 - **Combine rent and sale:** include both `'max_rent'` and `'price'` in the list if one flow handles both.
+
+# Results Check
+
+A short JavaScript snippet for a chatbot flow script step that uses an `attributeApi` object (for example Infobip Answers). After a property search has run, the results are stored in an attribute called `search_results`. This script works out roughly how many results there are and sets a simple `yes`/`no` flag, `has_results`, so the flow can show listings or tell the user nothing matched.
+
+## What it does
+
+1. Reads the `search_results` attribute.
+2. Counts the results, handling both real arrays and text (including JSON text).
+3. Sets `has_results` to `'yes'` if the count is above zero, otherwise `'no'`.
+
+## Attributes
+
+| Attribute        | Direction | Description                                                      |
+|------------------|-----------|------------------------------------------------------------------|
+| `search_results` | In        | The search results, as an array or as text (for example a JSON string). |
+| `has_results`    | Out       | `'yes'` if at least one result was counted, otherwise `'no'`.    |
+
+The count itself is not saved, only the flag.
+
+## How it works
+
+The counting rules are applied in order:
+
+| Value of `search_results`                       | How it is counted                                                |
+|-------------------------------------------------|------------------------------------------------------------------|
+| A real array                                    | The number of items in the array.                                |
+| Missing (`undefined` or `null`)                 | 0                                                                |
+| Anything else, converted to text and trimmed:   |                                                                  |
+| - empty text or exactly `[]`                    | 0                                                                |
+| - valid JSON that is an array                   | The number of items in the array.                                |
+| - valid JSON that is not an array               | 1                                                                |
+| - text that is not valid JSON                   | 1                                                                |
+
+If anything throws an error while reading or counting, the count is 0. Finally, `has_results` is `'yes'` when the count is greater than 0.
+
+## Examples
+
+| `search_results`                         | Count | `has_results` |
+|------------------------------------------|-------|---------------|
+| Array with 3 listings                    | 3     | `yes`         |
+| Empty array                              | 0     | `no`          |
+| `[{"id":1},{"id":2}]` (text)             | 2     | `yes`         |
+| `[]` (text)                              | 0     | `no`          |
+| `[ ]` (text with a space)                | 0     | `no`          |
+| empty text or not set                    | 0     | `no`          |
+| `{"id":7,"name":"Sea Point flat"}` (text) | 1    | `yes`         |
+| `Listing 1042`                           | 1     | `yes`         |
+| `No results found`                       | 1     | `yes`         |
+| `{"results":[]}` (text)                  | 1     | `yes`         |
+| `null` (text)                            | 1     | `yes`         |
+
+The last four rows show behaviours to watch for (see limitations).
+
+## Typical use
+
+A condition after this step branches on `has_results`:
+
+- `yes`: show the listings.
+- `no`: tell the user nothing matched and offer to change the criteria.
+
+## Known limitations
+
+- **Any other text counts as one result.** A message such as `No results found` or an error text from the search service is non-empty and not valid JSON, so it gives `has_results` = `'yes'`.
+- **Wrapped responses count as one.** A JSON object such as `{"results":[]}` or `{"count":0}` is not an array, so it counts as 1 even when it contains no listings. The script only counts a response that is a bare array.
+- **Other JSON values count as one.** The text `null`, `0`, `false`, `{}` or `""` all parse successfully and are not arrays, so each gives `'yes'`.
+- **The count is only approximate for non-arrays.** Anything that isn't an array is counted as exactly 1.
+- **No count is saved.** If the flow needs to say "I found 5 properties", the count has to be stored separately.
+- **Errors look like "no results".** If reading the attribute fails, the count falls back to 0 and `has_results` is `'no'`, so a technical problem can look the same as an empty search.
+- **Always overwrites.** `has_results` is set on every run.
+
+## Customising
+
+- **Save the count:** add `attributeApi.set('results_count', String(count));` before the last line.
+- **Handle wrapped responses:** after parsing, look inside the object, for example `parsed.results` or `parsed.items`, and count that array.
+- **Treat non-JSON text as no results:** set `count = 0` in the inner `catch` instead of `1`.
+- **Ignore empty JSON values:** treat `null`, `0`, `false` and `{}` as zero results.
+- **Separate errors from empty searches:** set a second flag, such as `results_error`, in the outer `catch`.
