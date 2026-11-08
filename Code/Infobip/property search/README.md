@@ -182,4 +182,115 @@ A condition after this step can branch on the flags:
 - **Add more flags:** copy the `has_location` line for other attributes, for example `has_budget` for `max_rent`.
 - **Require a minimum:** replace `some` with a count of non-empty values to require, for example, at least two criteria.
 
+# Listing Type Detector
+
+A JavaScript snippet for a chatbot flow script step that uses an `attributeApi` object (for example Infobip Answers). It works out whether a user is looking to **rent** or to **buy** by reading their message for keywords, and, if there are none, by looking at the price they mention. The result is saved as `listing_type`.
+
+## What it does
+
+1. Reads the user's latest message and any price captured earlier (for example by NER).
+2. Turns price text such as `R15 000`, `15k` or `2.5m` into a number.
+3. Looks for rent or buy keywords in the message.
+4. If no keyword is found, decides from the size of the price.
+5. Saves `rent`, `buy` or an empty string as `listing_type`.
+
+## Attributes
+
+### Inputs
+
+| Attribute                                              | Description                                                   |
+|--------------------------------------------------------|---------------------------------------------------------------|
+| `Price`, `price`                                       | Price captured earlier (first non-empty is used).             |
+| `lastReceivedTextMessage`, `user_message`, `message`   | The user's message (first non-empty is used).                 |
+
+### Output
+
+| Attribute      | Value                         | Meaning                                       |
+|----------------|-------------------------------|-----------------------------------------------|
+| `listing_type` | `rent`, `buy`, or empty       | The detected type. Empty means it couldn't tell. |
+
+## How it works
+
+### Helper: `read(name)`
+
+Reads an attribute safely and returns a trimmed string, or an empty string if the value is missing or an error occurs.
+
+### Helper: `parsePrices(text)`
+
+Finds every number in a piece of text and returns them as a list of numbers.
+
+1. The text is lowercased and **thousand separators are removed**: a space or comma between a digit and exactly three more digits is dropped, so `12 500` and `1,250,000` become `12500` and `1250000`.
+2. Every number is found, with an optional decimal part and an optional suffix: `k`, `m`, `million`, `mil`, `thousand` or `thou`.
+3. Suffix handling:
+
+| Suffix            | Effect                    | Example            |
+|-------------------|---------------------------|--------------------|
+| `k`               | multiplied by 1 000       | `15k` gives 15000  |
+| `m` or `million`  | multiplied by 1 000 000   | `2.5m` gives 2500000 |
+| `mil`, `thousand`, `thou` | **no multiplier** (see limitations) | `2 mil` gives 2 |
+
+### Choosing the price
+
+- The price is the **largest** number found in `Price` (or `price`), or 0 if there is none.
+- If that is below `RENT_MIN` (1 000), the largest number found in the **message** is used instead.
+
+### Constants
+
+| Constant   | Value    | Meaning                                                       |
+|------------|----------|---------------------------------------------------------------|
+| `SALE_MIN` | 100 000  | A price at or above this is treated as a sale price.          |
+| `RENT_MIN` | 1 000    | A price from here up to just under `SALE_MIN` is treated as monthly rent. |
+
+### Deciding the type
+
+The first rule that matches wins:
+
+| Order | Rule                                                                 | Result |
+|-------|----------------------------------------------------------------------|--------|
+| 1     | Message contains `rent`, `renting`, `to let`, `per month`, `pm`, `p/m` or `monthly` (whole words) | `rent` |
+| 2     | Message contains `buy`, `buying`, `purchase`, `for sale` or `bond` (whole words) | `buy`  |
+| 3     | Price is 100 000 or more                                             | `buy`  |
+| 4     | Price is 1 000 or more                                               | `rent` |
+| 5     | None of the above                                                    | empty  |
+
+The result is **always** saved to `listing_type`, even when it is empty.
+
+## Examples
+
+| Message (no earlier price)             | `listing_type` | Why                                          |
+|----------------------------------------|----------------|----------------------------------------------|
+| `Looking to rent in Sea Point`         | `rent`         | Keyword `rent`.                              |
+| `I want to buy a 3 bedroom house`      | `buy`          | Keyword `buy`.                               |
+| `Flat for 15k per month`               | `rent`         | Keyword `per month`.                         |
+| `2 bedroom flat under R15 000`         | `rent`         | No keyword, price 15 000 is in the rent range. |
+| `House for R2.5m`                      | `buy`          | No keyword, price 2 500 000 is a sale price. |
+| `Something around 1.2 million`         | `buy`          | No keyword, price 1 200 000.                 |
+| `Hi there`                             | empty          | No keyword and no price.                     |
+| `2 mil budget`                         | empty          | `mil` isn't multiplied, so the price is 2.   |
+| `Can I view at 3 pm?`                  | `rent`         | `pm` is read as "per month".                 |
+| `BOOK_VIEWING:1042`                    | `rent`         | The listing ID 1042 is read as a rent price. |
+| `Call me on 0821234567`                | `buy`          | The phone number is read as a sale price.    |
+
+## Known limitations
+
+- **It always overwrites `listing_type`.** If a value was set earlier, for example from the website listing type, this script replaces it, and replaces it with an empty string when it finds nothing. Run it before other steps that set `listing_type`, or only save when something was detected.
+- **`mil`, `thousand` and `thou` are recognised but not multiplied.** `2 mil` gives 2 and `15 thousand` gives 15, so the price is far too small.
+- **A standalone `m` means million.** `80 m from the beach` is read as 80 000 000 and gives `buy`.
+- **Keywords can mislead and beat the price.** `pm` matches `3 pm` (but not `3pm`), `monthly` matches `monthly bond repayment`, and rent keywords are checked before buy keywords. Words such as `rental` or `rentals` are not matched because whole words are required.
+- **The largest number in the message wins.** Phone numbers, years, postcodes and listing IDs can be taken as prices.
+- **Separator joining can merge unrelated numbers.** A space or comma followed by exactly three digits is removed, so `3 100` in other text becomes 3100.
+- **Fixed rand thresholds.** Rent of R100 000 or more is treated as a sale, a sale price under R100 000 can't be detected, and amounts under R1 000 are ignored.
+- **Decimal commas and dots.** `12.500` (European style) is read as 12.5.
+- **No confidence information.** An empty result simply means it couldn't tell.
+- **Single message only.** Only the first non-empty message attribute is read.
+
+## Customising
+
+- **Don't clear an existing value:** wrap the last line in `if (listingType) { ... }`, or only set when `listing_type` is currently empty.
+- **Fix the missing multipliers:** add `mil` and `thousand`/`thou` cases next to the `k` and `m` checks.
+- **Add keywords:** for example `rental`, `rentals`, `lease`, `for rent`, `house for sale`.
+- **Change thresholds:** edit `SALE_MIN` and `RENT_MIN`.
+- **Ignore phone numbers and IDs:** skip numbers with more than 8 digits or a leading zero before taking the largest.
+- **Require a currency marker:** only count numbers preceded by `R`, or followed by `k`, `m` or `million`.
+
 
