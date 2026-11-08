@@ -582,3 +582,13 @@ A condition after this step branches on `has_results`:
 - **Treat non-JSON text as no results:** set `count = 0` in the inner `catch` instead of `1`.
 - **Ignore empty JSON values:** treat `null`, `0`, `false` and `{}` as zero results.
 - **Separate errors from empty searches:** set a second flag, such as `results_error`, in the outer `catch`.
+
+const raw = (attributeApi.get('selected_property_id') || '').toString().trim();
+
+if (/^[0-9]+$/.test(raw)) {
+    attributeApi.set('property_id', raw);
+    attributeApi.set('valid_selection', 'yes');
+    
+} else {
+    attributeApi.set('valid_selection', 'no');
+}
