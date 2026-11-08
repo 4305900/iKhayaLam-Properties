@@ -583,12 +583,69 @@ A condition after this step branches on `has_results`:
 - **Ignore empty JSON values:** treat `null`, `0`, `false` and `{}` as zero results.
 - **Separate errors from empty searches:** set a second flag, such as `results_error`, in the outer `catch`.
 
-const raw = (attributeApi.get('selected_property_id') || '').toString().trim();
+# Property Selection Check
 
-if (/^[0-9]+$/.test(raw)) {
-    attributeApi.set('property_id', raw);
-    attributeApi.set('valid_selection', 'yes');
-    
-} else {
-    attributeApi.set('valid_selection', 'no');
-}
+A short JavaScript snippet for a chatbot flow script step that uses an `attributeApi` object (for example Infobip Answers). When a user chooses a property, the chosen listing ID is stored in `selected_property_id`. This script checks that it looks like a valid ID and, if so, copies it to `property_id`, the attribute the booking flow uses. It also sets a `yes`/`no` flag so the flow knows whether the selection can be used.
+
+## What it does
+
+1. Reads `selected_property_id` and trims it.
+2. Checks that it contains digits only.
+3. If it does, saves it to `property_id` and sets `valid_selection` to `'yes'`.
+4. If not, sets `valid_selection` to `'no'`.
+
+## Attributes
+
+| Attribute              | Direction | Description                                                  |
+|------------------------|-----------|--------------------------------------------------------------|
+| `selected_property_id` | In        | The listing ID chosen by the user.                           |
+| `property_id`          | Out       | The validated ID, set only when the check passes.            |
+| `valid_selection`      | Out       | `'yes'` if the ID is digits only, otherwise `'no'`.          |
+
+## How it works
+
+1. The value is converted to a string (empty if missing) and trimmed.
+2. It is tested against `^[0-9]+$`, which means the **whole** value must be one or more digits, with no letters, spaces, symbols or signs.
+3. On a match, the ID is copied unchanged to `property_id` and `valid_selection` is `'yes'`.
+4. Otherwise only `valid_selection` is set, to `'no'`.
+
+The ID is kept as text, so long numbers are never altered.
+
+## Examples
+
+| `selected_property_id` | `property_id`  | `valid_selection` |
+|------------------------|----------------|-------------------|
+| `1042`                 | `1042`         | `yes`             |
+| `  85  `               | `85`           | `yes`             |
+| `0`                    | `0`            | `yes`             |
+| `007`                  | `007`          | `yes`             |
+| `12a`                  | not set        | `no`              |
+| `#12`                  | not set        | `no`              |
+| `1 042`                | not set        | `no`              |
+| `-5`                   | not set        | `no`              |
+| `10.5`                 | not set        | `no`              |
+| empty or missing       | not set        | `no`              |
+
+## Typical use
+
+After the user picks a property from the search results, the flow runs this step and then branches on `valid_selection`:
+
+- `yes`: continue to booking using `property_id`.
+- `no`: ask the user to choose a property again.
+
+## Known limitations
+
+- **Format check only.** `valid_selection` means the ID is digits. It does not confirm that the listing exists, is available, or was one of the results shown to the user.
+- **Zero and leading zeros pass.** `0` and `007` are accepted. The website listing ID script is stricter and rejects both (it requires a number starting 1-9).
+- **No length limit.** Any number of digits is accepted.
+- **Failures keep the old `property_id`.** When the check fails, `property_id` is not changed or cleared, so it may still hold an earlier selection. Use `valid_selection` to tell whether the current one is good.
+- **No cleaning.** Inputs such as `#12`, `ID 12` or `1 042` are rejected instead of being tidied up.
+- **Always overwrites the flag.** `valid_selection` is set on every run, so it is also the flag set by the website listing ID script.
+
+## Customising
+
+- **Reject zero and leading zeros:** change the pattern to `^[1-9][0-9]*$`.
+- **Accept messy input:** strip non-digits first, for example `raw.replace(/\D/g, '')`, before testing.
+- **Limit the length:** use a pattern such as `^[0-9]{1,8}$`.
+- **Clear stale values on failure:** in the `else` branch, set `property_id` to `''`.
+- **Check the listing exists:** follow this step with a lookup against your listings or search results.
