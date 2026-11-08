@@ -110,3 +110,76 @@ If `max_rent` is still empty, the script scans the message for numbers:
 - **Add sanity limits:** accept `max_rent` only within a realistic range, such as R1 000 to R100 000.
 - **Avoid phone numbers and IDs:** ignore numbers longer than 6 digits or starting with `0`.
 - **Add a validity flag:** set an attribute such as `criteria_complete` when all required values are present.
+
+# Criteria Check
+ 
+A short JavaScript snippet for a chatbot flow script step that uses an `attributeApi` object (for example Infobip Answers). It looks at the rental search attributes collected so far and sets two simple `yes`/`no` flags: whether the user has given **any** search criteria, and whether they have given a **location**. The flow can use these flags to decide what to ask next.
+ 
+It is designed to run after the rental search extractor, which fills in `location`, `property_type`, `bedrooms` and `max_rent`.
+ 
+## What it does
+ 
+1. Checks whether any of `location`, `property_type`, `bedrooms` or `max_rent` has a value.
+2. Sets `has_criteria` to `'yes'` or `'no'` accordingly.
+3. Checks whether `location` specifically has a value.
+4. Sets `has_location` to `'yes'` or `'no'` accordingly.
+## Attributes
+ 
+### Inputs
+ 
+| Attribute       | Used for                       |
+|-----------------|--------------------------------|
+| `location`      | `has_criteria` and `has_location` |
+| `property_type` | `has_criteria`                 |
+| `bedrooms`      | `has_criteria`                 |
+| `max_rent`      | `has_criteria`                 |
+ 
+### Outputs
+ 
+| Attribute      | Value          | Meaning                                              |
+|----------------|----------------|------------------------------------------------------|
+| `has_criteria` | `yes` or `no`  | At least one of the four search attributes has a value. |
+| `has_location` | `yes` or `no`  | `location` has a value (ignoring surrounding spaces). |
+ 
+## How it works
+ 
+### `has_criteria`
+ 
+Each of the four attribute names is read. A missing value is treated as an empty string, and the value is converted to text. `.some(...)` returns true as soon as one of them is not empty. The result is saved as `'yes'` or `'no'`.
+ 
+### `has_location`
+ 
+`location` is read, converted to text and trimmed. If anything is left, `has_location` is `'yes'`, otherwise `'no'`.
+ 
+## Examples
+ 
+| `location` | `property_type` | `bedrooms` | `max_rent` | `has_criteria` | `has_location` |
+|------------|-----------------|------------|------------|----------------|----------------|
+| `Sea Point` | `apartment`    | `2`        | `15000`    | `yes`          | `yes`          |
+| empty      | empty           | `2`        | empty      | `yes`          | `no`           |
+| `Bellville`| empty           | empty      | empty      | `yes`          | `yes`          |
+| empty      | empty           | empty      | empty      | `no`           | `no`           |
+ 
+## Typical use
+ 
+A condition after this step can branch on the flags:
+ 
+- `has_criteria` is `no`: ask the user what they are looking for.
+- `has_criteria` is `yes` and `has_location` is `no`: ask which area they want.
+- `has_location` is `yes`: go ahead and search, or ask about any other missing details.
+## Known limitations
+ 
+- **Bathrooms are not counted.** If the only thing the user gave is a bathroom count, `has_criteria` is `'no'`.
+- **Spaces are handled inconsistently.** `has_criteria` does not trim values but `has_location` does, so a `location` made only of spaces gives `has_criteria` `'yes'` and `has_location` `'no'`. The rental search extractor trims its values, so this rarely happens in practice.
+- **Only checks that a value exists.** It does not check that the value is sensible, for example a `max_rent` of `0` still counts as criteria.
+- **A numeric `0` counts as empty.** If the platform returns a real number `0` rather than the text `"0"`, it is treated as missing.
+- **No error handling.** Unlike the helper functions in the extractor, `attributeApi.get` is called without a `try/catch`, so an error from the platform would fail the step.
+- **Always overwrites.** Both flags are recalculated and set every time the step runs.
+## Customising
+ 
+- **Count more attributes:** add names such as `'bathrooms'` to the list.
+- **Trim consistently:** add `.trim()` to the check in the `some` call.
+- **Add more flags:** copy the `has_location` line for other attributes, for example `has_budget` for `max_rent`.
+- **Require a minimum:** replace `some` with a count of non-empty values to require, for example, at least two criteria.
+
+
