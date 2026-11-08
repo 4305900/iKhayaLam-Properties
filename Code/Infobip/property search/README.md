@@ -427,3 +427,80 @@ When a range is captured, such as `R1m - R2m`, the larger number (the upper budg
 - **Add areas:** add names to the `locations` list, and put `Cape Town CBD` before `Cape Town` (or choose the longest match).
 - **Match whole words:** use a word-boundary test instead of `includes`.
 - **Add a validity flag:** set an attribute such as `criteria_complete` when all the values you need are present.
+
+# Criteria Check (Sale)
+
+A short JavaScript snippet for a chatbot flow script step that uses an `attributeApi` object (for example Infobip Answers). It looks at the property search attributes collected so far and sets two simple `yes`/`no` flags: whether the user has given **any** search criteria, and whether they have given a **location**. The flow can use these flags to decide what to ask next.
+
+This is the buy-side version of the rental criteria check. The only difference is that it checks `price` instead of `max_rent`. It is designed to run after the sale search extractor, which fills in `location`, `property_type`, `bedrooms` and `price`.
+
+## What it does
+
+1. Checks whether any of `location`, `property_type`, `bedrooms` or `price` has a value.
+2. Sets `has_criteria` to `'yes'` or `'no'` accordingly.
+3. Checks whether `location` specifically has a value.
+4. Sets `has_location` to `'yes'` or `'no'` accordingly.
+
+## Attributes
+
+### Inputs
+
+| Attribute       | Used for                          |
+|-----------------|-----------------------------------|
+| `location`      | `has_criteria` and `has_location` |
+| `property_type` | `has_criteria`                    |
+| `bedrooms`      | `has_criteria`                    |
+| `price`         | `has_criteria`                    |
+
+### Outputs
+
+| Attribute      | Value         | Meaning                                                 |
+|----------------|---------------|---------------------------------------------------------|
+| `has_criteria` | `yes` or `no` | At least one of the four search attributes has a value. |
+| `has_location` | `yes` or `no` | `location` has a value (ignoring surrounding spaces).   |
+
+## How it works
+
+### `has_criteria`
+
+Each of the four attribute names is read. A missing value is treated as an empty string, and the value is converted to text. `.some(...)` returns true as soon as one of them is not empty. The result is saved as `'yes'` or `'no'`.
+
+### `has_location`
+
+`location` is read, converted to text and trimmed. If anything is left, `has_location` is `'yes'`, otherwise `'no'`.
+
+## Examples
+
+| `location`  | `property_type` | `bedrooms` | `price`   | `has_criteria` | `has_location` |
+|-------------|-----------------|------------|-----------|----------------|----------------|
+| `Durbanville` | `house`       | `4`        | `2500000` | `yes`          | `yes`          |
+| empty       | empty           | `3`        | empty     | `yes`          | `no`           |
+| `Paarl`     | empty           | empty      | empty     | `yes`          | `yes`          |
+| empty       | empty           | empty      | empty     | `no`           | `no`           |
+
+## Typical use
+
+A condition after this step can branch on the flags:
+
+- `has_criteria` is `no`: ask the user what they are looking for.
+- `has_criteria` is `yes` and `has_location` is `no`: ask which area they want.
+- `has_location` is `yes`: go ahead and search, or ask about any other missing details.
+
+## Known limitations
+
+- **Bathrooms are not counted.** If the only thing the user gave is a bathroom count, `has_criteria` is `'no'`.
+- **Only sale-sized prices count.** The sale search extractor saves `price` only when it is R100 000 or more, so a smaller budget leaves `price` empty and does not count as criteria.
+- **Spaces are handled inconsistently.** `has_criteria` does not trim values but `has_location` does, so a `location` made only of spaces gives `has_criteria` `'yes'` and `has_location` `'no'`. The extractor trims its values, so this rarely happens in practice.
+- **Only checks that a value exists.** It does not check that the value is sensible.
+- **A numeric `0` counts as empty.** If the platform returns a real number `0` rather than the text `"0"`, it is treated as missing.
+- **No error handling.** `attributeApi.get` is called without a `try/catch`, so an error from the platform would fail the step.
+- **Always overwrites.** Both flags are recalculated and set every time the step runs.
+- **Use the right version.** Running this version in a rental flow ignores `max_rent`, and running the rental version in a sale flow ignores `price`.
+
+## Customising
+
+- **Count more attributes:** add names such as `'bathrooms'` to the list.
+- **Trim consistently:** add `.trim()` to the check in the `some` call.
+- **Add more flags:** copy the `has_location` line for other attributes, for example `has_budget` for `price`.
+- **Require a minimum:** replace `some` with a count of non-empty values to require, for example, at least two criteria.
+- **Combine rent and sale:** include both `'max_rent'` and `'price'` in the list if one flow handles both.
